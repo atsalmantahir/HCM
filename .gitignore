@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+bin
+obj
+packages
+Logs
+/src/HumanResourceManagement.Api/Logs/log-20240423.txt
+/src/HumanResourceManagement.Api/Logs/log-20240423.txt
