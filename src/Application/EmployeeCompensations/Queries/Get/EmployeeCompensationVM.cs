@@ -1,4 +1,5 @@
 ﻿using HumanResourceManagement.Application.Common.Models;
+using HumanResourceManagement.Application.EmployeeAllowances.Queries.Get;
 using HumanResourceManagement.Domain.Enums;
 using System.Text.Json.Serialization;
 
@@ -8,11 +9,11 @@ public class EmployeeCompensationVM
 {
     public string ExternalIdentifier { get; set; }
     public EntityExternalIdentifier EmployeeProfile { get; set; }
+    
+    // Calculated Field
     public decimal CurrentGrossSalary { get; set; }
     public decimal BasicSalary { get; set; }
-    public decimal HouseRentAllowance { get; set; }
-    public decimal MedicalAllowance { get; set; }
-    public decimal UtilityAllowance { get; set; }
+    public List<EmployeeAllowanceVM> EmployeeAllowances { get; set; }    
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public PaymentMethod ModeOfPayment { get; set; }

@@ -1,10 +1,14 @@
-﻿using HumanResourceManagement.Application.Common.Models;
+﻿using HumanResourceManagement.Application.Allowances.Commands.Create;
+using HumanResourceManagement.Application.Allowances.Queries.Get;
+using HumanResourceManagement.Application.Common.Models;
 using HumanResourceManagement.Application.Departments.Commands.Create;
 using HumanResourceManagement.Application.Departments.Commands.Update;
 using HumanResourceManagement.Application.Departments.Queries.Get;
 using HumanResourceManagement.Application.Designations.Commands.Create;
 using HumanResourceManagement.Application.Designations.Commands.Update;
 using HumanResourceManagement.Application.Designations.Queries.Get;
+using HumanResourceManagement.Application.EmployeeAllowances.Commands.Create;
+using HumanResourceManagement.Application.EmployeeAllowances.Queries.Get;
 using HumanResourceManagement.Application.EmployeeAttendences.Commands.Create;
 using HumanResourceManagement.Application.EmployeeAttendences.Commands.Update;
 using HumanResourceManagement.Application.EmployeeAttendences.Queries.Get;
@@ -48,6 +52,28 @@ public static class MappingExtensions
 
     public static Task<List<TDestination>> ProjectToListAsync<TDestination>(this IQueryable queryable, IConfigurationProvider configuration) where TDestination : class
         => queryable.ProjectTo<TDestination>(configuration).AsNoTracking().ToListAsync();
+
+    public static Allowance ToEntity(this CreateAllowanceCommand request) 
+    {
+        return request == null ? null : new Allowance 
+        {
+            Name = request.Name,
+        };
+    }
+
+    public static AllowanceVM ToDto(this Allowance request)
+    {
+        return request == null ? null : new AllowanceVM
+        {
+            Name = request.Name,
+            ExternalIdentifier = request.ExternalIdentifier,
+        };
+    }
+
+    public static IQueryable<AllowanceVM> ToDto(this IQueryable<Allowance> requests) 
+    {
+        return requests == null ? null : requests.Select(x => x.ToDto());
+    }
 
     public static DepartmentVM ToDto(this Department department) 
     {
@@ -210,14 +236,33 @@ public static class MappingExtensions
         return new EmployeeCompensation
         {
             EmployeeProfileId = employeeProfileId,
-            BasicSalary = request.BasicSalary,
-            CurrentGrossSalary = grossSalary,
-            HouseRentAllowance = request.HouseRentAllowance,
-            MedicalAllowance = request.MedicalAllowance,
             ModeOfPayment = request.ModeOfPayment,
-            UtilityAllowance = request.UtilityAllowance,
+            BasicSalary = request.BasicSalary,
+            //CurrentGrossSalary = grossSalary,
+            //HouseRentAllowance = request.HouseRentAllowance,
+            //MedicalAllowance = request.MedicalAllowance,
+            //UtilityAllowance = request.UtilityAllowance,
         };
     }
+
+    public static EmployeeCompensation ToEntity(this CreateEmployeeCompensationCommand request, int employeeProfileId, List<EmployeeAllowance> employeeAllowances)
+    {
+        if (request == null)
+        {
+            return null;
+        }
+
+        var grossSalary = request.CalculateGrossSalary();
+
+        return new EmployeeCompensation
+        {
+            EmployeeProfileId = employeeProfileId,
+            ModeOfPayment = request.ModeOfPayment,
+            BasicSalary = request.BasicSalary,
+            EmployeeAllowances = employeeAllowances
+        };
+    }
+
 
     public static EmployeeCompensation ToEntity(this UpdateEmployeeCompensationCommand request, int employeeProfileId, int employeeCompensationId)
     {
@@ -554,6 +599,8 @@ public static class MappingExtensions
             AttendanceDate = attendanceDate,
             TimeIn = timeIn,
             TimeOut = timeOut,
+            ApprovedBy = 0,
+            IsApproved = true,
         };
     }
 
@@ -623,22 +670,42 @@ public static class MappingExtensions
         return request == null ? null : request.Select(x => x.ToDto()).ToList();
     }
 
-    public static EmployeeCompensationVM ToDto(this EmployeeCompensation request) 
+    public static EmployeeCompensationVM ToDto(this EmployeeCompensation request)
     {
-        return request == null ? null : new EmployeeCompensationVM 
+        decimal grossSalary = CalculateGrossSalary(request);
+
+        return request == null ? null : new EmployeeCompensationVM
         {
             BasicSalary = request.BasicSalary,
-            CurrentGrossSalary = request.CurrentGrossSalary,
-            EmployeeProfile = new EntityExternalIdentifier 
+            EmployeeProfile = new EntityExternalIdentifier
             {
                 ExternalIdentifier = request.EmployeeProfile?.ExternalIdentifier,
             },
+            CurrentGrossSalary = grossSalary,
             ExternalIdentifier = request.ExternalIdentifier,
-            HouseRentAllowance = request.HouseRentAllowance,
-            MedicalAllowance = request.MedicalAllowance,
             ModeOfPayment = request.ModeOfPayment,
-            UtilityAllowance = request.UtilityAllowance,
+            EmployeeAllowances = request.EmployeeAllowances == null
+            ? null : request.EmployeeAllowances
+            .Select(x => new EmployeeAllowanceVM
+            {
+                Allowance = new AllowanceVM
+                {
+                    ExternalIdentifier = x.Allowance?.ExternalIdentifier,
+                    Name = x.Allowance?.Name,
+                    Description = "Field not set yet",
+                    IsTaxable = false,
+                },
+                Amount = x.Amount,
+            })
+            .ToList(),
         };
+    }
+
+    public static decimal CalculateGrossSalary(EmployeeCompensation request)
+    {
+        decimal totalAllowancesAmount = request.EmployeeAllowances?.Sum(x => x.Amount) ?? 0;
+        decimal grossSalary = request.BasicSalary + totalAllowancesAmount;
+        return grossSalary;
     }
 
     public static IQueryable<EmployeeCompensationVM> ToDto(this IQueryable<EmployeeCompensation> request)

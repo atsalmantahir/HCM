@@ -2,7 +2,7 @@
 
 namespace HumanResourceManagement.Application.Payrolls.Services;
 
-public interface IPayrollService
+public interface IIncomeTaxCalculator
 {
-    Task GeneratePayrollAsync(PayrollRequest request);
+    IncomeTaxResponse CalculateIncomeTax(decimal MonthlyIncome);
 }

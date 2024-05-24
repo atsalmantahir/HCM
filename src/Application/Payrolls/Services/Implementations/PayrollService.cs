@@ -1,44 +1,55 @@
-﻿using HumanResourceManagement.Application.Payrolls.Services.Models;
+﻿using HumanResourceManagement.Application.Common.Mappings;
+using HumanResourceManagement.Application.Payrolls.Services.Models;
 using HumanResourceManagement.Domain.Entities;
 using HumanResourceManagement.Domain.Enums;
+using HumanResourceManagement.Domain.Exceptions;
 using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.Payrolls.Services.Implementations;
 
 public class PayrollService : IPayrollService
 {
-    private readonly SemaphoreSlim currentMonthPayrollSemaphore = new SemaphoreSlim(1, 1);
-    private List<Payroll> currentMonthPayroll = new List<Payroll>();
-
     private readonly IOrganisationsRepository organisationsRepository;
     private readonly IEmployeeProfilesRepository employeeProfilesRepository;
+    private readonly IPayrollCyclesRepository payrollCyclesRepository;
     private readonly IPayrollsRepository payrollsRepository;
     private readonly IEmployeeAttendencesRepository employeeAttendencesRepository;
     private readonly IEmployeeCompensationsRepository employeeCompensationsRepository;
     private readonly ITaxSlabsRepository taxSlabsRepository;
+    private readonly IIncomeTaxCalculator incomeTaxCalculator;
 
     private IList<TaxSlab> taxSlabs;
 
     public PayrollService(
         IOrganisationsRepository organisationsRepository,
         IEmployeeProfilesRepository employeeProfilesRepository,
+        IPayrollCyclesRepository payrollCyclesRepository,
         IPayrollsRepository payrollsRepository,
         IEmployeeAttendencesRepository employeeAttendencesRepository,
         IEmployeeCompensationsRepository employeeCompensationsRepository,
-        ITaxSlabsRepository taxSlabsRepository)
+        ITaxSlabsRepository taxSlabsRepository,
+        IIncomeTaxCalculator incomeTaxCalculator)
     {
         this.organisationsRepository = organisationsRepository;
         this.employeeProfilesRepository = employeeProfilesRepository;
+        this.payrollCyclesRepository = payrollCyclesRepository;
         this.payrollsRepository = payrollsRepository;
         this.employeeAttendencesRepository = employeeAttendencesRepository;
         this.employeeCompensationsRepository = employeeCompensationsRepository;
         this.taxSlabsRepository = taxSlabsRepository;
+        this.incomeTaxCalculator = incomeTaxCalculator;
     }
 
     public async Task GeneratePayrollAsync(PayrollRequest request)
     {
         var lastDateOfMonth = GetLastDateOfMonth(request.Year, request.Month);
         var organisation = await organisationsRepository.GetAsync(request.OrganisationExternalIdentifier);
+
+        if (organisation == null)
+        {
+            throw new OrganisationNotFoundException(request.OrganisationExternalIdentifier);
+        }
+
         taxSlabs = taxSlabsRepository.GetAll().ToList();
         var employeesInOrganisation = organisation.Departments.SelectMany(x => x.Designations.SelectMany(x => x.EmployeeProfiles)).ToList();
         var allAttendanceRecords = employeeAttendencesRepository.GetAll();
@@ -48,28 +59,44 @@ public class PayrollService : IPayrollService
             .ThenBy(x => x.AttendanceDate)
             .ToList();
 
-        var payrollTasks = employeesInOrganisation.Select(async employeeProfile =>
+        var payrollCycle = new PayrollCycle
+        {
+            StartDate = GetFirstDateOfMonth(request.Year, request.Month),
+            EndDate = GetLastDateOfMonth(request.Year, request.Month),
+            CycleName = "Paycycle",    
+            Payrolls = new List<Payroll> { },
+        };
+
+        foreach (var employeeProfile in employeesInOrganisation)
         {
             var employeeCompensation = await employeeCompensationsRepository.GetByEmployeeProfileAsync(employeeProfile.ExternalIdentifier);
+
+            if (employeeCompensation == null)
+                continue;
+
             var employeeAttendances = currentMonthAttendances
                 .Where(a => a.EmployeeProfileId == employeeProfile.EmployeeProfileId)
                 .ToList();
             if (employeeAttendances.Count == 0)
-                return;
+                continue;
 
             var workingDaysInGivenMonth = WorkingDaysCalculator.CalculateWorkingDays(request.Year, request.Month);
             var requiredHours = WorkingHoursCalculator.CalculateRequiredWorkingHours(workingDaysInGivenMonth, organisation.DailyWorkingHours);
             var totalWorkingHours = CalculateTotalWorkingHours(employeeAttendances);
-            var hourlyRate = CalculateHourlyRate(employeeCompensation, requiredHours);
-            var grossSalary = employeeCompensation.CurrentGrossSalary;
+            var grossSalary = MappingExtensions.CalculateGrossSalary(employeeCompensation);
+            var hourlyRate = CalculateHourlyRate(grossSalary, requiredHours);
             var netSalary = totalWorkingHours * hourlyRate;
-            var taxRate = GetTaxRate(netSalary);
-            var taxDeductions = TaxDeductions(netSalary, taxRate);
+
+            var taxCalculation = this.incomeTaxCalculator.CalculateIncomeTax(netSalary);
+
+            var taxRate = taxCalculation.MonthlyTax;
+            var taxDeductions = taxCalculation.MonthlyTax;
             var totalEarnings = netSalary - taxDeductions;
 
             var existingPayroll = await payrollsRepository.GetAsync(employeeProfile.ExternalIdentifier, request.Year, request.Month);
             var payroll = new Payroll
             {
+                PayrollCycle = payrollCycle,
                 EmployeeProfileId = employeeProfile.EmployeeProfileId,
                 PayrollDate = lastDateOfMonth,
                 HoursWorked = totalWorkingHours,
@@ -78,7 +105,7 @@ public class PayrollService : IPayrollService
                 Deductions = taxDeductions,
                 TotalEarnings = totalEarnings,
                 HourlyRate = hourlyRate,
-                IncomeTaxInPercent = taxRate,
+                IncomeTaxInPercent = 0,
                 RequiredHours = requiredHours,
                 PaymentDate = lastDateOfMonth,
                 AmountPaid = totalEarnings,
@@ -88,6 +115,8 @@ public class PayrollService : IPayrollService
 
             if (existingPayroll != null)
             {
+                payroll.PayrollCycle = payrollCycle;
+
                 payroll.PayrollId = existingPayroll.PayrollId;
                 payroll.AmountPaid = totalEarnings;
                 payroll.PaymentMethod = PaymentMethod.None;
@@ -97,35 +126,28 @@ public class PayrollService : IPayrollService
             }
             else
             {
-                await currentMonthPayrollSemaphore.WaitAsync(); // Prevent race condition
-                try
-                {
-                    currentMonthPayroll.Add(payroll);
-                }
-                finally
-                {
-                    currentMonthPayrollSemaphore.Release();
-                }
+                payrollCycle.Payrolls.Add(payroll);
             }
-        }).ToList();
 
-        await Task.WhenAll(payrollTasks);
-
-        if (currentMonthPayroll.Count > 0)
-        {
-            await payrollsRepository.InsertListAsync(currentMonthPayroll, new CancellationToken());
+            // Update paycycle and payrolls within is left
         }
+
+        await this.payrollCyclesRepository.InsertAsync(payrollCycle, new CancellationToken());
 
         // For now, throw NotImplementedException to indicate that the function is not fully implemented yet
         throw new NotImplementedException();
     }
 
+    private DateTime GetFirstDateOfMonth(int year, int month)
+    {
+        DateTime lastDayOfMonth = new DateTime(year, month, 1);
+
+        return lastDayOfMonth;
+    }
+
     private DateTime GetLastDateOfMonth(int year, int month)
     {
-        // Calculate the number of days in the given month and year
         int daysInMonth = DateTime.DaysInMonth(year, month);
-
-        // Create a DateTime object representing the last day of the month
         DateTime lastDayOfMonth = new DateTime(year, month, daysInMonth);
 
         return lastDayOfMonth;
@@ -143,61 +165,10 @@ public class PayrollService : IPayrollService
         return totalWorkingHours;
     }
 
-    private decimal CalculateHourlyRate(EmployeeCompensation compensation, decimal hoursRequiredInMonth)
+    private decimal CalculateHourlyRate(decimal grossSalary, decimal hoursRequiredInMonth)
     {
-        // Calculate the total monthly compensation (excluding mode of payment)
-        decimal totalMonthlyCompensation = compensation.BasicSalary +
-                                           compensation.HouseRentAllowance +
-                                           compensation.MedicalAllowance +
-                                           compensation.UtilityAllowance;
-
-        // Calculate the hourly rate by dividing the total monthly compensation by the hours in a month
-        decimal hourlyRate = totalMonthlyCompensation / hoursRequiredInMonth;
+        decimal hourlyRate = grossSalary / hoursRequiredInMonth;
 
         return hourlyRate;
-    }
-    private decimal TaxDeductions(decimal netSalary, decimal taxRate)
-    {
-        if (taxRate <= 0)
-        {
-            return 0;
-        }
-
-        // Calculate tax based on the applicable slab's tax rate and taxable amount
-        decimal taxAmount = netSalary * (taxRate / 100);
-
-        return taxAmount;
-    }
-
-    //private decimal GetTaxRate(decimal netSalary)
-    //{
-    //    // Find the applicable tax slab based on net salary
-    //    var applicableSlab = taxSlabs.FirstOrDefault(slab =>
-    //        netSalary >= slab.LowerLimit && netSalary <= slab.UpperLimit);
-
-    //    if (applicableSlab == null)
-    //    {
-    //        // If no applicable slab is found, return zero tax
-    //        return 0;
-    //    }
-
-    //    // Calculate tax based on the applicable slab's tax rate and taxable amount
-    //    return applicableSlab.TaxRate;
-    //}
-
-    private decimal GetTaxRate(decimal monthlySalary)
-    {
-        decimal yearlySalary = monthlySalary * 12;
-
-        var taxSlab = this.taxSlabs.FirstOrDefault(s => yearlySalary >= s.MinimumIncome && yearlySalary <= s.MaximumIncome);
-
-        if (taxSlab != null)
-        {
-            var excessAmount = yearlySalary - taxSlab.MinimumIncome;
-            var deduction = taxSlab.BaseTax + ((excessAmount / 100) * taxSlab.PercentageTax);
-            return deduction / 12; // Convert yearly deduction to monthly
-        }
-
-        return 0;
     }
 }

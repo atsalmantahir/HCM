@@ -19,6 +19,7 @@ public class PayrollsController : ControllerBase
 {
     private readonly IMediator mediator;
     private readonly IPayrollService payrollService;
+    private readonly IIncomeTaxCalculator incomeTaxCalculator;
 
     /// <summary>
     /// constructor
@@ -27,10 +28,12 @@ public class PayrollsController : ControllerBase
     /// <param name="payrollService"></param>
     public PayrollsController(
         IMediator mediator,
-        IPayrollService payrollService)
+        IPayrollService payrollService,
+        IIncomeTaxCalculator incomeTaxCalculator)
     {
         this.mediator = mediator;
         this.payrollService = payrollService;
+        this.incomeTaxCalculator = incomeTaxCalculator;
     }
 
     /// <summary>
@@ -71,11 +74,12 @@ public class PayrollsController : ControllerBase
         return Ok("Payroll Generated");
     }
 
+    [AllowAnonymous]
     [HttpPost]
     [Route("calculate/taxation")]
-    public async Task<IResult> CalculateTaxation() 
+    public async Task<IResult> CalculateTaxation([FromBody] decimal monthlyIncome) 
     {
-        var taxationResult = await this.payrollService.CalculateTaxation();
+        var taxationResult = this.incomeTaxCalculator.CalculateIncomeTax(monthlyIncome);
         return Results.Ok(taxationResult);  
     }
 }

@@ -19,7 +19,6 @@ public class EmployeeCompensationsController : ControllerBase
     }
 
     [Authorize]
-
     [HttpPost]
     [Route("{employeeExternalIdentifier}/compensation")]
     public async Task<IResult> CreateEmployeeCompensationAsync(
@@ -36,7 +35,6 @@ public class EmployeeCompensationsController : ControllerBase
     }
 
     [Authorize]
-
     [HttpPut]
     [Route("{employeeExternalIdentifier}/compensation/{externalIdentifier}")]
     public async Task<IResult> UpdateEmployeeCompensationAsync(
@@ -59,7 +57,6 @@ public class EmployeeCompensationsController : ControllerBase
     }
 
     [Authorize]
-
     [HttpDelete]
     [Route("{employeeExternalIdentifier}/compensation/{externalIdentifier}")]
     public async Task<IResult> DeleteEmployeeCompensationAsync(
@@ -71,7 +68,6 @@ public class EmployeeCompensationsController : ControllerBase
     }
 
     [Authorize]
-
     [HttpGet]
     [Route("{employeeExternalIdentifier}/compensation")]
     public async Task<IResult> ListEmployeeCompensationAsync(
@@ -83,7 +79,6 @@ public class EmployeeCompensationsController : ControllerBase
     }
 
     [Authorize]
-
     [HttpGet]
     [Route("{employeeExternalIdentifier}/compensation/{externalIdentifier}")]
     public async Task<IResult> GetEmployeeCompensationAsync(

@@ -20,6 +20,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Allowances\Commands\Delete\" />
+	  <Folder Include="Allowances\Commands\Update\" />
+	  <Folder Include="EmployeeAllowances\Commands\Delete\" />
+	  <Folder Include="EmployeeAllowances\Commands\Update\" />
+	  <Folder Include="EmployeeAllowances\Queries\List\" />
 	  <Folder Include="EmployeeLoans\Commands\Delete\" />
 	  <Folder Include="EmployeeLoans\Commands\Update\" />
 	  <Folder Include="LoanApprovals\Commands\Delete\" />

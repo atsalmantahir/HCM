@@ -26,6 +26,9 @@ public class EmployeeCompensationsRepository : IEmployeeCompensationsRepository
         return await this
             .context
             .EmployeeCompensations
+            .Include(x => x.EmployeeProfile)
+            .Include(x => x.EmployeeAllowances)
+                .ThenInclude(x => x.Allowance)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.EmployeeCompensationId == id);
     }
@@ -35,6 +38,9 @@ public class EmployeeCompensationsRepository : IEmployeeCompensationsRepository
         return await this
             .context
             .EmployeeCompensations
+            .Include(x => x.EmployeeProfile)
+            .Include(x => x.EmployeeAllowances)
+                .ThenInclude(x => x.Allowance)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
     }
@@ -44,6 +50,9 @@ public class EmployeeCompensationsRepository : IEmployeeCompensationsRepository
         return await this
             .context
             .EmployeeCompensations
+            .Include(x => x.EmployeeProfile)
+            .Include(x => x.EmployeeAllowances)
+                .ThenInclude(x => x.Allowance)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.EmployeeProfile.ExternalIdentifier == employeeProfileExternalIdentifier && x.IsDeleted == false);
     }
@@ -52,6 +61,9 @@ public class EmployeeCompensationsRepository : IEmployeeCompensationsRepository
     {
         return this.context.EmployeeCompensations
             .Where(x => x.IsDeleted == false)
+            .Include(x => x.EmployeeProfile)
+            .Include(x => x.EmployeeAllowances)
+                .ThenInclude(x => x.Allowance)
             .OrderByDescending(x => x.CreatedAt)
             .ThenByDescending(x => x.LastModifiedAt);
     }

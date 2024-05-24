@@ -5,6 +5,7 @@ using HumanResourceManagement.Domain.Constants;
 using HumanResourceManagement.Domain.Repositories;
 using HumanResourceManagement.Infrastructure.Data;
 using HumanResourceManagement.Infrastructure.Data.Interceptors;
+using HumanResourceManagement.Infrastructure.Extensions;
 using HumanResourceManagement.Infrastructure.Identity;
 using HumanResourceManagement.Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -29,26 +30,10 @@ public static class DependencyInjection
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
 
-        services.AddScoped<IPayrollService, PayrollService>();
+        services.ConfigureRepositeries();
+        services.ConfigureServices();
 
-        services.AddScoped<IOrganisationsRepository, OrganisationsRepository>();
-        services.AddScoped<IEmployeeAttendencesRepository, EmployeeAttendencesRepository>();
-        services.AddScoped<IEmployeeCompensationsRepository, EmployeeCompensationsRepository>();
-        services.AddScoped<IEmployeeEducationsRepository, EmployeeEducationsRepository>();
-        services.AddScoped<IEmployeeExperiencesRepository, EmployeeExperiencesRepository>();
-        services.AddScoped<IEmployeeProfilesRepository, EmployeeProfilesRepository>();
-        services.AddScoped<IDepartmentsRepository, DepartmentsRepository>();
-        services.AddScoped<IDesignationsRepository, DesignationsRepository>();
-        services.AddScoped<IHolidaysRepository, HolidaysRepository>();
-        services.AddScoped<IPayrollsRepository, PayrollsRepository>();
-        services.AddScoped<ITaxSlabsRepository, TaxSlabsRepository>();
-        services.AddScoped<IEmployeeLoansRepository, EmployeeLoansRepository>();
-        services.AddScoped<ILoanApprovalsRepository, LoanApprovalsRepository>();
-        services.AddScoped<ILoanGuarantorsRepository, LoanGuarantorsRepository>();
-        services.AddScoped<IReviewQuestionsRepository, ReviewQuestionsRepository>();
-        services.AddScoped<IEmployeeReviewsRepository, EmployeeReviewsRepository>();
-        services.AddScoped<IEmployeeReviewFromManagersRepository, EmployeeReviewFromManagersRepository>();
-        services.AddScoped<IEmployeeReviewFromManagerWithQuestionAndAnswersRepository, EmployeeReviewFromManagerWithQuestionAndAnswersRepository>();
+        services.AddScoped<IIncomeTaxCalculator, IncomeTaxCalculator>();
 
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {

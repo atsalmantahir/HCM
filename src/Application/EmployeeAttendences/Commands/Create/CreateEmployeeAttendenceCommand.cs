@@ -39,7 +39,9 @@ public class CreateEmployeeAttendenceCommandHandler : IRequestHandler<CreateEmpl
 
         var employeeAttendance = this.repository.GetAll();
         var attendanceDate = DateOnly.Parse(request.AttendanceDate);
-        if (employeeAttendance is not null && employeeAttendance.Any(x => x.AttendanceDate == attendanceDate)) 
+        if (employeeAttendance is not null 
+            && employeeAttendance.Any(x => x.AttendanceDate == attendanceDate 
+            && x.EmployeeProfile.ExternalIdentifier == request.EmployeeProfile.ExternalIdentifier)) 
         {
             throw new ConflictRequestException("Already added attendance for this date");
         }

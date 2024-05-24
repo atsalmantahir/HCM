@@ -1,9 +1,12 @@
 ﻿using HumanResourceManagement.Application.Common.Mappings;
 using HumanResourceManagement.Application.Common.Models;
+using HumanResourceManagement.Application.EmployeeAllowances.Commands.Create;
 using HumanResourceManagement.Application.EmployeeProfiles.Commands.Update;
+using HumanResourceManagement.Domain.Entities;
 using HumanResourceManagement.Domain.Enums;
 using HumanResourceManagement.Domain.Exceptions;
 using HumanResourceManagement.Domain.Repositories;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace HumanResourceManagement.Application.EmployeeCompensations.Commands.Create;
@@ -12,8 +15,18 @@ public record CreateEmployeeCompensationCommand : IRequest<CreateEmployeeCompens
 {
     public EntityExternalIdentifier EmployeeProfile { get; set; }
     public decimal BasicSalary { get; set; }
+
+    public List<CreateEmployeeAllowanceCommand> EmployeeAllowances { get; init; }
+
+    // todo: this will be deleted
     public decimal HouseRentAllowance { get; set; }
+
+    // todo: this will be deleted
+
     public decimal MedicalAllowance { get; set; }
+
+    // todo: this will be deleted
+
     public decimal UtilityAllowance { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -24,13 +37,16 @@ public class CreateEmployeeCompensationCommandHandler : IRequestHandler<CreateEm
 {
     private readonly IEmployeeCompensationsRepository repository;
     private readonly IEmployeeProfilesRepository employeeProfilesRepository;
+    private readonly IAllowancesRepository allowancesRepository;
 
     public CreateEmployeeCompensationCommandHandler(
         IEmployeeCompensationsRepository repository,
-        IEmployeeProfilesRepository employeeProfilesRepository)
+        IEmployeeProfilesRepository employeeProfilesRepository,
+        IAllowancesRepository allowancesRepository)
     {
         this.repository = repository;
         this.employeeProfilesRepository = employeeProfilesRepository;
+        this.allowancesRepository = allowancesRepository;
     }
 
     public async Task<CreateEmployeeCompensationCommand> Handle(CreateEmployeeCompensationCommand request, CancellationToken cancellationToken)
@@ -50,7 +66,32 @@ public class CreateEmployeeCompensationCommandHandler : IRequestHandler<CreateEm
             return null;
         }
 
-        var entity = request.ToEntity(employeeProfile.EmployeeProfileId);
+        var allowancesExtIdArray = request.EmployeeAllowances.Select(x => x.Allowance.ExternalIdentifier).ToArray();
+
+        var allowances = this.allowancesRepository
+            .GetAll()
+            .Where(x => allowancesExtIdArray.Contains(x.ExternalIdentifier));
+
+        if (allowances.Count() != allowancesExtIdArray.Length) 
+        {
+            return null;
+        }
+
+        var employeeAllowances = new List<EmployeeAllowance>();
+        foreach (var allowance in allowances)
+        {
+            var requestAllowance = request.EmployeeAllowances.FirstOrDefault(x => x.Allowance.ExternalIdentifier == allowance.ExternalIdentifier);
+            if (requestAllowance != null)
+            {
+                employeeAllowances.Add(new EmployeeAllowance
+                {
+                    Allowance = allowance,
+                    Amount = requestAllowance.Amount,                    
+                });
+            }
+        }
+
+        var entity = request.ToEntity(employeeProfile.EmployeeProfileId, employeeAllowances);
 
         // todo
         //entity.AddDomainEvent(new TodoItemCreatedEvent(entity));
@@ -77,7 +118,8 @@ public static class CreateEmployeeCompensationCommandExtention
             HouseRentAllowance = request.HouseRentAllowance,
             MedicalAllowance = request.MedicalAllowance,
             ModeOfPayment = request.ModeOfPayment,
-            UtilityAllowance = request.UtilityAllowance
+            UtilityAllowance = request.UtilityAllowance,
+            EmployeeAllowances = request.EmployeeAllowances,
         };
     }
 }
