@@ -8,8 +8,6 @@ public class EmployeeLoanConfiguration : IEntityTypeConfiguration<EmployeeLoan>
 {
     public void Configure(EntityTypeBuilder<EmployeeLoan> builder)
     {
-        builder.Property(e => e.ExternalIdentifier)
-                  .ValueGeneratedOnAdd()
-                  .HasDefaultValueSql("NEWID()");
+        
     }
 }

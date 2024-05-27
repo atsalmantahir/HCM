@@ -43,21 +43,23 @@ public class PayrollService : IPayrollService
     public async Task GeneratePayrollAsync(PayrollRequest request)
     {
         var lastDateOfMonth = GetLastDateOfMonth(request.Year, request.Month);
-        var organisation = await organisationsRepository.GetAsync(request.OrganisationExternalIdentifier);
+        var organisation = await organisationsRepository.GetAsync(request.OrganisationId);
 
         if (organisation == null)
         {
-            throw new OrganisationNotFoundException(request.OrganisationExternalIdentifier);
+            throw new OrganisationNotFoundException(request.OrganisationId.ToString());
         }
 
         taxSlabs = taxSlabsRepository.GetAll().ToList();
-        var employeesInOrganisation = organisation.Departments.SelectMany(x => x.Designations.SelectMany(x => x.EmployeeProfiles)).ToList();
-        var allAttendanceRecords = employeeAttendencesRepository.GetAll();
+        var employeesInOrganisation = organisation.Departments
+            .SelectMany(x => x.Designations.SelectMany(x => x.EmployeeProfiles)).ToList();
+
+        var allAttendanceRecords = await employeeAttendencesRepository
+            .GetAllAsync(lastDateOfMonth.Month, lastDateOfMonth.Year);
+
         var currentMonthAttendances = allAttendanceRecords
-            .Where(x => x.AttendanceDate.Month == lastDateOfMonth.Month && x.AttendanceDate.Year == lastDateOfMonth.Year)
             .OrderByDescending(x => x.EmployeeProfileId)
-            .ThenBy(x => x.AttendanceDate)
-            .ToList();
+            .ThenBy(x => x.AttendanceDate).ToList();
 
         var payrollCycle = new PayrollCycle
         {
@@ -69,7 +71,8 @@ public class PayrollService : IPayrollService
 
         foreach (var employeeProfile in employeesInOrganisation)
         {
-            var employeeCompensation = await employeeCompensationsRepository.GetByEmployeeProfileAsync(employeeProfile.ExternalIdentifier);
+            var employeeCompensation = await employeeCompensationsRepository
+                .GetByEmployeeProfileAsync(employeeProfile.EmployeeProfileId);
 
             if (employeeCompensation == null)
                 continue;
@@ -93,7 +96,8 @@ public class PayrollService : IPayrollService
             var taxDeductions = taxCalculation.MonthlyTax;
             var totalEarnings = netSalary - taxDeductions;
 
-            var existingPayroll = await payrollsRepository.GetAsync(employeeProfile.ExternalIdentifier, request.Year, request.Month);
+            //var existingPayroll = await payrollsRepository
+            //    .GetAsync(employeeProfile.EmployeeProfileId, request.Year, request.Month);
             var payroll = new Payroll
             {
                 PayrollCycle = payrollCycle,
@@ -113,18 +117,18 @@ public class PayrollService : IPayrollService
                 PaymentStatus = PaymentStatus.Pending,
             };
 
-            if (existingPayroll != null)
-            {
-                payroll.PayrollCycle = payrollCycle;
+            //if (existingPayroll != null)
+            //{
+            //    payroll.PayrollCycle = payrollCycle;
 
-                payroll.PayrollId = existingPayroll.PayrollId;
-                payroll.AmountPaid = totalEarnings;
-                payroll.PaymentMethod = PaymentMethod.None;
-                payroll.PaymentStatus = PaymentStatus.Pending;
+            //    payroll.PayrollId = existingPayroll.PayrollId;
+            //    payroll.AmountPaid = totalEarnings;
+            //    payroll.PaymentMethod = PaymentMethod.None;
+            //    payroll.PaymentStatus = PaymentStatus.Pending;
 
-                await payrollsRepository.UpdateAsync(payroll, new CancellationToken());
-            }
-            else
+            //    await payrollsRepository.UpdateAsync(payroll, new CancellationToken());
+            //}
+            //else
             {
                 payrollCycle.Payrolls.Add(payroll);
             }

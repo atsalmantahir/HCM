@@ -4,20 +4,6 @@ namespace HumanResourceManagement.Application.EmployeeCompensations.Commands.Ser
 
 public static class CompensationCalculator
 {
-    public static decimal CalculateGrossSalary(this UpdateEmployeeCompensationCommand compensation)
-    {
-        ValidateBasicSalary(compensation.BasicSalary);
-        return CalculateGrossSalaryInternal(compensation.BasicSalary, compensation.HouseRentAllowance,
-                                            compensation.MedicalAllowance, compensation.UtilityAllowance);
-    }
-
-    public static decimal CalculateGrossSalary(this CreateEmployeeCompensationCommand compensation)
-    {
-        ValidateBasicSalary(compensation.BasicSalary);
-        return CalculateGrossSalaryInternal(compensation.BasicSalary, compensation.HouseRentAllowance,
-                                            compensation.MedicalAllowance, compensation.UtilityAllowance);
-    }
-
     private static decimal CalculateGrossSalaryInternal(decimal basicSalary, decimal houseRentAllowance,
                                                         decimal medicalAllowance, decimal utilityAllowance)
     {

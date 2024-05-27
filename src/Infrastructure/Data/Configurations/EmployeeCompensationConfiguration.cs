@@ -9,8 +9,6 @@ public class EmployeeCompensationConfiguration : IEntityTypeConfiguration<Employ
 {
     public void Configure(EntityTypeBuilder<EmployeeCompensation> builder)
     {
-        builder.Property(e => e.ExternalIdentifier)
-                  .ValueGeneratedOnAdd()
-                  .HasDefaultValueSql("NEWID()");
+       
     }
 }

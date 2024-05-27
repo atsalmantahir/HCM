@@ -48,35 +48,35 @@ public class TaxSlabsController : ControllerBase
     /// <summary>
     /// update
     /// </summary>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPut]
-    [Route("{externalIdentifier}")]
+    [Route("{id}")]
     public async Task<IResult> UpdateTaxSlabAsync(
-        string externalIdentifier,
+        int id,
         [FromBody] UpdateTaxSlabCommand request)
     {
-        if (externalIdentifier != request?.ExternalIdentifier)
+        if (id != request?.Id)
         {
             return Results.BadRequest("External Identifier not match");
         }
 
-        var response = await mediator.Send(request.StructureRequest(externalIdentifier));
+        var response = await mediator.Send(request.StructureRequest(id));
         return Results.Ok(response);
     }
 
     /// <summary>
     /// delete
     /// </summary>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Route("{externalIdentifier}")]
+    [Route("{id}")]
     public async Task<IResult> DeleteTaxSlabAsync(
-        string externalIdentifier)
+        int id)
     {
-        var response = await mediator.Send(new DeleteTaxSlabCommand(externalIdentifier));
+        var response = await mediator.Send(new DeleteTaxSlabCommand(id));
         return Results.Ok(response);
     }
 
@@ -95,14 +95,14 @@ public class TaxSlabsController : ControllerBase
     /// <summary>
     /// get single
     /// </summary>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet]
-    [Route("{externalIdentifier}")]
+    [Route("{id}")]
     public async Task<IResult> GetTaxSlabAsync(
-        string externalIdentifier)
+        int id)
     {
-        var response = await mediator.Send(new GetTaxSlabQuery(externalIdentifier));
+        var response = await mediator.Send(new GetTaxSlabQuery(id));
         return Results.Ok(response);
     }
 }

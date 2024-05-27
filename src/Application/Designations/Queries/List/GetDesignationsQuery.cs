@@ -6,7 +6,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.Designations.Queries.List;
 
-public record GetDesignationsQuery(string departmentExternalIdentifier) : PaginatedQuery, IRequest<PaginatedList<DesignationVM>>;
+public record GetDesignationsQuery(int departmentId) : PaginatedQuery, IRequest<PaginatedList<DesignationVM>>;
 
 public class GetDesignationsQueryHandler : IRequestHandler<GetDesignationsQuery, PaginatedList<DesignationVM>>
 {
@@ -19,7 +19,7 @@ public class GetDesignationsQueryHandler : IRequestHandler<GetDesignationsQuery,
 
     public async Task<PaginatedList<DesignationVM>> Handle(GetDesignationsQuery request, CancellationToken cancellationToken)
     {
-        var designations = this.repository.GetAll(request.departmentExternalIdentifier);
+        var designations = this.repository.GetAll(request.departmentId);
         var response = designations.ToDesignationListDto();
 
         return await PaginatedList<DesignationVM>.CreateAsync(response, request?.PageNumber, request?.PageSize);

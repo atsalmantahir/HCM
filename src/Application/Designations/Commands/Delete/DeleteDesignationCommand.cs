@@ -4,9 +4,9 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.Designations.Commands.Delete;
 
-public record DeleteDesignationCommand(string departmentExternalIdentifier, string externalIdentifier) : IRequest<DeleteDesignationCommand>
+public record DeleteDesignationCommand(int departmentId, int Id) : IRequest<DeleteDesignationCommand>
 {
-    public EntityExternalIdentifier Department { get; set; }
+    public EntityIdentifier Department { get; set; }
     public bool IsDeleted { get; set; }
 }
 
@@ -21,15 +21,15 @@ public class DeleteDesignationCommandHandler : IRequestHandler<DeleteDesignation
 
     public async Task<DeleteDesignationCommand> Handle(DeleteDesignationCommand request, CancellationToken cancellationToken)
     {
-        var designation = await this.repository.GetAsync(request.Department.ExternalIdentifier, request.externalIdentifier);
+        var designation = await this.repository.GetAsync(request.Id);
         if (designation == null)
         {
-            throw new DesignationNotFoundException(request.externalIdentifier);
+            throw new DesignationNotFoundException(request.Id.ToString());
         }
 
         await this.repository.DeleteAsync(designation, new CancellationToken());
 
-        return new DeleteDesignationCommand(request.departmentExternalIdentifier, request.externalIdentifier)
+        return new DeleteDesignationCommand(request.departmentId, request.Id)
         {
             IsDeleted = true,
         };

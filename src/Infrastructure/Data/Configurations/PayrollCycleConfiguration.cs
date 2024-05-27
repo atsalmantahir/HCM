@@ -8,8 +8,6 @@ public class PayrollCycleConfiguration : IEntityTypeConfiguration<PayrollCycle>
 {
     public void Configure(EntityTypeBuilder<PayrollCycle> builder)
     {
-        builder.Property(e => e.ExternalIdentifier)
-                  .ValueGeneratedOnAdd()
-                  .HasDefaultValueSql("NEWID()");
+        
     }
 }

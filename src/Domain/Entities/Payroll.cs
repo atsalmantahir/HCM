@@ -6,7 +6,6 @@ public class Payroll : BaseAuditableEntity
 {
     [Column("PayrollId")]
     public int PayrollId { get; set; }
-    public string ExternalIdentifier { get; set; }
     public DateTime PayrollDate { get; set; }
     public decimal HoursWorked { get; set; }
     public decimal RequiredHours { get; set; }

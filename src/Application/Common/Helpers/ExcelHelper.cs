@@ -64,9 +64,9 @@ public static class ExcelHelper
         return excelRow == null ? null :
             new CreateEmployeeProfileCommand
             {
-                Designation = new Models.EntityExternalIdentifier
+                Designation = new Models.EntityIdentifier
                 {
-                    ExternalIdentifier = excelRow.GetCellToString(0),
+                    Id = Convert.ToInt32(excelRow.GetCell(0)),
                 },
                 EmployeeName = excelRow.GetCellToString(1),
                 EmployeeCode = excelRow.GetCellToString(2),
@@ -88,15 +88,20 @@ public static class ExcelHelper
         return excelRow == null ? null :
             new CreateEmployeeAttendenceCommand
             {
-                EmployeeProfile = new Models.EntityExternalIdentifier
+                EmployeeProfile = new Models.EntityIdentifier
                 {
-                    ExternalIdentifier = excelRow.GetCellToString(0),
+                    Id = Convert.ToInt32(excelRow.GetCell(0)),
                 },
 
                 AttendanceDate = excelRow.GetCellToString(1),
                 TimeIn = excelRow.GetCellTimeOnlyValue(2),
                 TimeOut = excelRow.GetCellTimeOnlyValue(3),
             };
+    }
+
+    private static double? GetCell(this IRow cells, int index)
+    {
+        return cells?.GetCell(index).NumericCellValue;
     }
 
     private static string GetCellToString(this IRow cells, int index) 

@@ -7,8 +7,9 @@ namespace HumanResourceManagement.Application.EmployeeCompensations.Queries.Get;
 
 public class EmployeeCompensationVM
 {
-    public string ExternalIdentifier { get; set; }
-    public EntityExternalIdentifier EmployeeProfile { get; set; }
+    public int Id { get; set; }
+
+    public EntityIdentifier EmployeeProfile { get; set; }
     
     // Calculated Field
     public decimal CurrentGrossSalary { get; set; }

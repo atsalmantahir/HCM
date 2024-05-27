@@ -8,8 +8,6 @@ public class ReviewQuestion : BaseAuditableEntity
     [Column("ReviewQuestionId")]
     public int ReviewQuestionId { get; set; }
 
-    public string ExternalIdentifier { get; set; }
-
     public string Text { get; set; }
 
     // For integer and floating point questions, define min and max values

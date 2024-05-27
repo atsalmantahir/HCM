@@ -4,7 +4,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.Departments.Queries.Get;
 
-public record GetDepartmentQuery(string organistaionExternalIdentifier, string externalIdentifier) : IRequest<DepartmentVM>;
+public record GetDepartmentQuery(int organistaionId, int id) : IRequest<DepartmentVM>;
 
 public class GetDepartmentQueryHandler : IRequestHandler<GetDepartmentQuery, DepartmentVM>
 {
@@ -17,12 +17,10 @@ public class GetDepartmentQueryHandler : IRequestHandler<GetDepartmentQuery, Dep
 
     public async Task<DepartmentVM> Handle(GetDepartmentQuery request, CancellationToken cancellationToken)
     {
-        var department = await this.departmentsRepository.GetAsync(
-            request.organistaionExternalIdentifier,
-            request.externalIdentifier);
+        var department = await this.departmentsRepository.GetAsync(request.id);
         if (department is null) 
         {
-            throw new DepartmentNotFoundException(request.externalIdentifier);
+            throw new DepartmentNotFoundException(request.id.ToString());
         }
 
         return department.ToDto();

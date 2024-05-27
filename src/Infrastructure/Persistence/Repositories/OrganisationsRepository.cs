@@ -26,20 +26,11 @@ public class OrganisationsRepository : IOrganisationsRepository
         return await this
             .context
             .Organisations
+                .Include(x => x.Departments)
+                    .ThenInclude(x => x.Designations)
+                        .ThenInclude(x => x.EmployeeProfiles)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.OrganisationId == id && x.IsDeleted == false);
-    }
-
-    public async Task<Organisation> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .Organisations
-            .Include(x => x.Departments)
-                .ThenInclude(x => x.Designations)
-                .ThenInclude(x => x.EmployeeProfiles)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
     }
 
     public IQueryable<Organisation> GetAll()

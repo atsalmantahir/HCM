@@ -13,8 +13,6 @@ public class EmployeeReviewQuestionWithAnswerConfiguration : IEntityTypeConfigur
 {
     public void Configure(EntityTypeBuilder<EmployeeReviewFromManagerWithQuestionAndAnswer> builder)
     {
-        builder.Property(e => e.ExternalIdentifier)
-                  .ValueGeneratedOnAdd()
-                  .HasDefaultValueSql("NEWID()");
+        
     }
 }

@@ -7,7 +7,6 @@ public class EmployeeExperience : BaseAuditableEntity
     [Column("EmployeeExperienceId")]
 
     public int EmployeeExperienceId { get; set; }
-    public string ExternalIdentifier { get; set; }
     public string CompanyName { get; set; }
     public string Position { get; set; }
     public DateTime StartDate { get; set; }

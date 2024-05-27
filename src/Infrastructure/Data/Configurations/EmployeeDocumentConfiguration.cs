@@ -8,8 +8,6 @@ public class EmployeeDocumentConfiguration : IEntityTypeConfiguration<EmployeeDo
 {
     public void Configure(EntityTypeBuilder<EmployeeDocument> builder)
     {
-        builder.Property(e => e.ExternalIdentifier)
-                  .ValueGeneratedOnAdd()
-                  .HasDefaultValueSql("NEWID()");
+        
     }
 }

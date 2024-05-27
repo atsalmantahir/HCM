@@ -4,7 +4,7 @@ namespace HumanResourceManagement.Application.Departments.Queries.Get;
 
 public class DepartmentVM
 {
-    public string ExternalIdentifier { get; set; }
+    public int Id { get; set; }
     public string DepartmentName { get; set; }
 
     public OrganisationVM Organisation { get; set; }

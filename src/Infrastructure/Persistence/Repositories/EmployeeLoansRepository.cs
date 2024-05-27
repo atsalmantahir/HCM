@@ -25,6 +25,17 @@ public class EmployeeLoansRepository : IEmployeeLoansRepository
             .ThenByDescending(x => x.LastModifiedAt);
     }
 
+    public IQueryable<EmployeeLoan> GetAll(int employeeProfileId)
+    {
+        return this.context.EmployeeLoans
+            .Where(x => x.IsDeleted == false && x.EmployeeProfileId == employeeProfileId)
+            .Include(x => x.LoanGuarantors)
+            .Include(x => x.LoanApprovals)
+            .Include(x => x.EmployeeProfile)
+            .OrderByDescending(x => x.CreatedAt)
+            .ThenByDescending(x => x.LastModifiedAt);
+    }
+
     public async Task DeleteAsync(EmployeeLoan entity, CancellationToken cancellationToken)
     {
         entity.IsDeleted = true;
@@ -42,18 +53,6 @@ public class EmployeeLoansRepository : IEmployeeLoansRepository
             .Include(x => x.LoanApprovals)
             .AsNoTracking()
             .FirstOrDefaultAsync(x => x.EmployeeLoanID == id && x.IsDeleted == false);
-    }
-
-    public async Task<EmployeeLoan> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .EmployeeLoans
-            .Include(x => x.EmployeeProfile)
-            .Include(x => x.LoanApprovals)
-            .Include(x => x.LoanGuarantors)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
     }
 
     public async Task InsertAsync(EmployeeLoan entity, CancellationToken cancellationToken)

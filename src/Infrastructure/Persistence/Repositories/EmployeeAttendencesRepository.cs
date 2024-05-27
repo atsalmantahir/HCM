@@ -31,22 +31,27 @@ public class EmployeeAttendencesRepository : IEmployeeAttendencesRepository
             .FirstOrDefaultAsync(x => x.EmployeeAttendanceId == id && x.IsDeleted == false);
     }
 
-    public async Task<EmployeeAttendance> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .EmployeeAttendances
-            .Where(x => x.IsDeleted == false)
-            .Include(x => x.EmployeeProfile)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
-    }
-
     public IQueryable<EmployeeAttendance> GetAll()
     {
         return this.context.EmployeeAttendances
             .Include(x => x.EmployeeProfile)
             .Where(x => x.IsDeleted == false)
+            .OrderByDescending(x => x.CreatedAt)
+            .ThenByDescending(x => x.LastModifiedAt);
+    }
+
+    public async Task<List<EmployeeAttendance>> GetAllAsync(int month, int year)
+    {
+        return await this.context.EmployeeAttendances
+            .Where(x => x.AttendanceDate.Month == month && x.AttendanceDate.Year == year && x.IsDeleted == false)
+            .ToListAsync();
+    }
+
+    public IQueryable<EmployeeAttendance> GetAll(int employeeProfileId)
+    {
+        return this.context.EmployeeAttendances
+            .Include(x => x.EmployeeProfile)
+            .Where(x => x.IsDeleted == false && x.EmployeeProfileId == employeeProfileId)
             .OrderByDescending(x => x.CreatedAt)
             .ThenByDescending(x => x.LastModifiedAt);
     }

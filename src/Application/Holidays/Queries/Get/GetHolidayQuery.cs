@@ -4,7 +4,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.Holidays.Queries.Get;
 
-public record GetHolidayQuery(string externalIdentifier) : IRequest<HolidayVM>;
+public record GetHolidayQuery(int id) : IRequest<HolidayVM>;
 
 public class GetHolidayQueryHandler : IRequestHandler<GetHolidayQuery, HolidayVM>
 {
@@ -17,10 +17,10 @@ public class GetHolidayQueryHandler : IRequestHandler<GetHolidayQuery, HolidayVM
 
     public async Task<HolidayVM> Handle(GetHolidayQuery request, CancellationToken cancellationToken)
     {
-        var holiday = await this.repository.GetAsync(request.externalIdentifier);
+        var holiday = await this.repository.GetAsync(request.id);
         if (holiday is null) 
         {
-            throw new Domain.Exceptions.NotFoundRequestException($"The holiday with identifier '{request.externalIdentifier}' is not found");
+            throw new Domain.Exceptions.NotFoundRequestException($"The holiday with identifier '{request.id}' is not found");
         }
 
         return holiday.ToDto();

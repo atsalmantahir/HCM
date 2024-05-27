@@ -3,7 +3,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.TaxSlabs.Commands.Delete;
 
-public record DeleteTaxSlabCommand(string externalIdentifier) : IRequest<DeleteTaxSlabCommand>
+public record DeleteTaxSlabCommand(int id) : IRequest<DeleteTaxSlabCommand>
 {
     public bool IsDeleted { get; set; }
 }
@@ -19,7 +19,7 @@ public class DeleteTaxSlabCommandHandler : IRequestHandler<DeleteTaxSlabCommand,
 
     public async Task<DeleteTaxSlabCommand> Handle(DeleteTaxSlabCommand request, CancellationToken cancellationToken)
     {
-        var taxSlab = await this.taxSlabsRepository.GetAsync(request.externalIdentifier);
+        var taxSlab = await this.taxSlabsRepository.GetAsync(request.id);
         if (taxSlab == null) 
         {
             return null;
@@ -27,7 +27,7 @@ public class DeleteTaxSlabCommandHandler : IRequestHandler<DeleteTaxSlabCommand,
 
         await this.taxSlabsRepository.DeleteAsync(taxSlab, new CancellationToken());
 
-        return new DeleteTaxSlabCommand(request.externalIdentifier)
+        return new DeleteTaxSlabCommand(request.id)
         {
             IsDeleted = true,
         };

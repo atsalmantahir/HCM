@@ -4,7 +4,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.EmployeeCompensations.Commands.Delete;
 
-public record DeleteEmployeeCompensationCommand(string employeeProfileExternalIdentifier, string externalIdentifier) : IRequest<DeleteEmployeeCompensationCommand>
+public record DeleteEmployeeCompensationCommand(int employeeProfileId, int Id) : IRequest<DeleteEmployeeCompensationCommand>
 {
     public bool IsDeleted { get; set; }
 }
@@ -24,21 +24,21 @@ public class DeleteEmployeeCompensationCommandHandler : IRequestHandler<DeleteEm
 
     public async Task<DeleteEmployeeCompensationCommand> Handle(DeleteEmployeeCompensationCommand request, CancellationToken cancellationToken)
     {
-        var employeeProfile = await this.employeeProfilesRepository.GetAsync(request.employeeProfileExternalIdentifier);
+        var employeeProfile = await this.employeeProfilesRepository.GetAsync(request.employeeProfileId);
         if (employeeProfile == null)
         {
-            throw new EmployeeNotFoundException(request.employeeProfileExternalIdentifier);
+            throw new EmployeeNotFoundException(request.employeeProfileId.ToString());
         }
 
-        var employeeCompensation = await this.repository.GetAsync(request.externalIdentifier);
+        var employeeCompensation = await this.repository.GetAsync(request.Id);
         if (employeeCompensation == null)
         {
-            throw new EmployeeCompensationNotFoundException(request.externalIdentifier);
+            throw new EmployeeCompensationNotFoundException(request.Id.ToString());
         }
 
         await this.repository.DeleteAsync(employeeCompensation, new CancellationToken());
 
-        return new DeleteEmployeeCompensationCommand(request.employeeProfileExternalIdentifier, request.externalIdentifier)
+        return new DeleteEmployeeCompensationCommand(request.employeeProfileId, request.Id)
         {
             IsDeleted = true,
         };

@@ -3,7 +3,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.Organisations.Commands.Delete;
 
-public record DeleteOrganisationCommand(string externalIdentifier) : IRequest<DeleteOrganisationCommand>
+public record DeleteOrganisationCommand(int id) : IRequest<DeleteOrganisationCommand>
 {
     public bool IsDeleted { get; set; }
 }
@@ -19,7 +19,7 @@ public class DeleteOrganisationCommandHandler : IRequestHandler<DeleteOrganisati
 
     public async Task<DeleteOrganisationCommand> Handle(DeleteOrganisationCommand request, CancellationToken cancellationToken)
     {
-        var organisation = await this.repository.GetAsync(request.externalIdentifier);
+        var organisation = await this.repository.GetAsync(request.id);
         if (organisation == null)
         {
             return null;
@@ -27,7 +27,7 @@ public class DeleteOrganisationCommandHandler : IRequestHandler<DeleteOrganisati
 
         await this.repository.DeleteAsync(organisation, new CancellationToken());
 
-        return new DeleteOrganisationCommand(request.externalIdentifier)
+        return new DeleteOrganisationCommand(request.id)
         {
             IsDeleted = true,
         };

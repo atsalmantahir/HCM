@@ -12,7 +12,7 @@ namespace HumanResourceManagement.Application.EmployeeProfiles.Commands.Create;
 
 public record CreateEmployeeProfileCommand : IRequest<CreateEmployeeProfileCommand>
 {
-    public EntityExternalIdentifier Designation { get; set; }
+    public EntityIdentifier Designation { get; set; }
 
     [Required]
     public string EmployeeName { get; set; }
@@ -70,10 +70,10 @@ public class CreateEmployeeProfileCommandHandler : IRequestHandler<CreateEmploye
     {
         string defaultPassword = "Password1!";
         
-        var designation = await this.designationsRepository.GetAsync(request.Designation.ExternalIdentifier);
+        var designation = await this.designationsRepository.GetAsync(request.Designation.Id);
         if (designation is null)
         {
-            throw new DesignationNotFoundException(request.Designation.ExternalIdentifier);
+            throw new DesignationNotFoundException(request.Designation.Id.ToString());
         }
 
         // Create Identity User with employee profile and set password.

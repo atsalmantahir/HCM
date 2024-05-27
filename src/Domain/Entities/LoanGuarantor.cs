@@ -6,7 +6,6 @@ public class LoanGuarantor : BaseAuditableEntity
 {
     [Column("LoanGuarantorID")]
     public int LoanGuarantorID { get; set; }
-    public string ExternalIdentifier { get; set; }
     public string Name { get; set; }
     public string Relationship { get; set; }
     public string ContactInfo { get; set; }

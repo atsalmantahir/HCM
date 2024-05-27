@@ -1,11 +1,10 @@
 ﻿using HumanResourceManagement.Application.Common.Mappings;
-using HumanResourceManagement.Application.Departments.Queries.Get;
 using HumanResourceManagement.Domain.Exceptions;
 using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.Allowances.Queries.Get;
 
-public record GetAllowanceQuery(string externalIdentifier) : IRequest<AllowanceVM>;
+public record GetAllowanceQuery(int id) : IRequest<AllowanceVM>;
 
 
 public class GetAllowanceQueryHandler : IRequestHandler<GetAllowanceQuery, AllowanceVM>
@@ -19,10 +18,10 @@ public class GetAllowanceQueryHandler : IRequestHandler<GetAllowanceQuery, Allow
 
     public async Task<AllowanceVM> Handle(GetAllowanceQuery request, CancellationToken cancellationToken)
     {
-        var allowance = await this.allowancesRepository.GetAsync(request.externalIdentifier);
+        var allowance = await this.allowancesRepository.GetAsync(request.id);
         if (allowance is null)
         {
-            throw new DepartmentNotFoundException(request.externalIdentifier);
+            throw new DepartmentNotFoundException(request.id.ToString());
         }
 
         return allowance.ToDto();

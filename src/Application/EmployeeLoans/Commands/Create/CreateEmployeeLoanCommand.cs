@@ -10,7 +10,7 @@ namespace HumanResourceManagement.Application.EmployeeLoans.Commands.Create;
 
 public record CreateEmployeeLoanCommand : IRequest<CreateEmployeeLoanCommand>
 {
-    public EntityExternalIdentifier EmployeeProfile { get; set; }
+    public EntityIdentifier EmployeeProfile { get; set; }
     public decimal LoanAmount { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -46,7 +46,7 @@ public class CreateEmployeeLoanCommandHandler : IRequestHandler<CreateEmployeeLo
     public async Task<CreateEmployeeLoanCommand> Handle(CreateEmployeeLoanCommand request, CancellationToken cancellationToken)
     {
         var employeeProfile = await this.employeeProfilesRepository
-            .GetAsync(request.EmployeeProfile.ExternalIdentifier);
+            .GetAsync(request.EmployeeProfile.Id);
 
         var entity = request.ToEmployeeLoanEntity(employeeProfile.EmployeeProfileId);
 

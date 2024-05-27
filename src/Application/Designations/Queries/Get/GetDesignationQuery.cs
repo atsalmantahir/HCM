@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace HumanResourceManagement.Application.Designations.Queries.Get;
 
-public record GetDesignationQuery(string departmentExternalIdentifier, string externalIdentifier) : IRequest<DesignationVM>;
+public record GetDesignationQuery(int departmentId, int id) : IRequest<DesignationVM>;
 
 public class GetDesignationQueryHandler : IRequestHandler<GetDesignationQuery, DesignationVM>
 {
@@ -19,10 +19,10 @@ public class GetDesignationQueryHandler : IRequestHandler<GetDesignationQuery, D
 
     public async Task<DesignationVM> Handle(GetDesignationQuery request, CancellationToken cancellationToken)
     {
-        var department = await this.repository.GetAsync(request.departmentExternalIdentifier, request.externalIdentifier);
+        var department = await this.repository.GetAsync(request.id);
         if (department is null) 
         {
-            throw new DesignationNotFoundException(request.externalIdentifier);
+            throw new DesignationNotFoundException(request.id.ToString());
         }
         return department.ToDto();
     }

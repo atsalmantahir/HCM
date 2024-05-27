@@ -5,7 +5,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.EmployeeExperiences.Queries.Get;
 
-public record GetEmployeeExperienceQuery(string employeeExternalIdentifier, string externalIdentifier) : IRequest<EmployeeExperienceVM>;
+public record GetEmployeeExperienceQuery(int employeeProfileId, int id) : IRequest<EmployeeExperienceVM>;
 
 public class GetEmployeeExperienceQueryHandler : IRequestHandler<GetEmployeeExperienceQuery, EmployeeExperienceVM>
 {
@@ -20,16 +20,16 @@ public class GetEmployeeExperienceQueryHandler : IRequestHandler<GetEmployeeExpe
 
     public async Task<EmployeeExperienceVM> Handle(GetEmployeeExperienceQuery request, CancellationToken cancellationToken)
     {
-        var employeeProfile = await this.employeeExperiencesRepository.GetAsync(request.employeeExternalIdentifier);
+        var employeeProfile = await this.employeeExperiencesRepository.GetAsync(request.employeeProfileId);
         if (employeeProfile == null) 
         {
-            throw new EmployeeNotFoundException(request.employeeExternalIdentifier);
+            throw new EmployeeNotFoundException(request.employeeProfileId.ToString());
         }
 
-        var employeeExperience = await this.repository.GetAsync(request.externalIdentifier);
+        var employeeExperience = await this.repository.GetAsync(request.id);
         if (employeeExperience == null)
         {
-            throw new EmployeeExperienceNotFoundException(request.externalIdentifier);
+            throw new EmployeeExperienceNotFoundException(request.id.ToString());
         }
 
         return employeeExperience.ToDto();

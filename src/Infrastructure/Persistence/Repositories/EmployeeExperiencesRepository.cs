@@ -30,15 +30,6 @@ public class EmployeeExperiencesRepository : IEmployeeExperiencesRepository
             .FirstOrDefaultAsync(x => x.EmployeeExperienceId == id && x.IsDeleted == false);
     }
 
-    public async Task<EmployeeExperience> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .EmployeeExperiences
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
-    }
-
     public IQueryable<EmployeeExperience> GetAll()
     {
         return this.context.EmployeeExperiences
@@ -46,6 +37,16 @@ public class EmployeeExperiencesRepository : IEmployeeExperiencesRepository
             .OrderByDescending(x => x.CreatedAt)
             .ThenByDescending(x => x.LastModifiedAt);
     }
+
+
+    public IQueryable<EmployeeExperience> GetAll(int employeeProfileId)
+    {
+        return this.context.EmployeeExperiences
+            .Where(x => x.IsDeleted == false && x.EmployeeProfileId == employeeProfileId)
+            .OrderByDescending(x => x.CreatedAt)
+            .ThenByDescending(x => x.LastModifiedAt);
+    }
+
 
     public async Task InsertAsync(EmployeeExperience entity, CancellationToken cancellationToken)
     {

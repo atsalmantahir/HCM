@@ -30,18 +30,15 @@ public class EmployeeEducationsRepository : IEmployeeEducationsRepository
             .FirstOrDefaultAsync(x => x.EmployeeEducationId == id && x.IsDeleted == false);
     }
 
-    public async Task<EmployeeEducation> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .EmployeeEducations
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
-    }
-
     public async Task<IList<EmployeeEducation>> GetAllAsync()
     {
         return await this.context.EmployeeEducations.Where(x => x.IsDeleted == false).ToListAsync();
+    }
+
+    public async Task<IList<EmployeeEducation>> GetAllAsync(int employeeProfileId)
+    {
+        return await this.context.EmployeeEducations
+            .Where(x => x.IsDeleted == false && x.EmployeeProfileId == employeeProfileId).ToListAsync();
     }
 
     public async Task InsertAsync(EmployeeEducation entity, CancellationToken cancellationToken)

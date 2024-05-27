@@ -5,9 +5,7 @@ namespace HumanResourceManagement.Domain.Entities;
 public class EmployeeProfile : BaseAuditableEntity
 {
     [Column("EmployeeProfileId")]
-
     public int EmployeeProfileId { get; set; }
-    public string ExternalIdentifier { get; set; }
     public string EmployeeName { get; set; }
     public string EmployeeCode { get; set; }
     public EmployeeType EmployeeType { get; set; }

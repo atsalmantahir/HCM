@@ -7,7 +7,6 @@ public class Organisation : BaseAuditableEntity
     [Column("OrganisationId")]
 
     public int OrganisationId { get; set; }
-    public string ExternalIdentifier { get; set; }
     public string OrganisationName { get; set; }
 
     public string Logo { get; set; }

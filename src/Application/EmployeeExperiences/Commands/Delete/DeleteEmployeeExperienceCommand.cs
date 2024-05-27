@@ -4,7 +4,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.EmployeeExperiences.Commands.Delete;
 
-public record DeleteEmployeeExperienceCommand(string employeeProfileExternalIdentifier, string externalIdentifier) : IRequest<DeleteEmployeeExperienceCommand>
+public record DeleteEmployeeExperienceCommand(int employeeProfileId, int id) : IRequest<DeleteEmployeeExperienceCommand>
 {
     public bool IsDeleted { get; set; }
 }
@@ -22,21 +22,21 @@ public class DeleteEmployeeExperienceCommandHandler : IRequestHandler<DeleteEmpl
 
     public async Task<DeleteEmployeeExperienceCommand> Handle(DeleteEmployeeExperienceCommand request, CancellationToken cancellationToken)
     {
-        var employeeProfile = await this.employeeProfilesRepository.GetAsync(request.employeeProfileExternalIdentifier);
+        var employeeProfile = await this.employeeProfilesRepository.GetAsync(request.employeeProfileId);
         if (employeeProfile == null)
         {
-            throw new EmployeeNotFoundException(request.employeeProfileExternalIdentifier);
+            throw new EmployeeNotFoundException(request.employeeProfileId.ToString());
         }
 
-        var employeeExperience = await this.repository.GetAsync(request.externalIdentifier);
+        var employeeExperience = await this.repository.GetAsync(request.id);
         if (employeeExperience == null)
         {
-            throw new EmployeeExperienceNotFoundException(request.externalIdentifier);
+            throw new EmployeeExperienceNotFoundException(request.id.ToString());
         }
 
         await this.repository.DeleteAsync(employeeExperience, new CancellationToken());
 
-        return new DeleteEmployeeExperienceCommand(request.employeeProfileExternalIdentifier, request.externalIdentifier)
+        return new DeleteEmployeeExperienceCommand(request.employeeProfileId, request.id)
         {
             IsDeleted = true,
         };

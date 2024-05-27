@@ -6,7 +6,7 @@ namespace HumanResourceManagement.Application.EmployeeEducations.Commands.Create
 
 public record CreateEmployeeEducationCommand : IRequest<Result<CreateEmployeeEducationCommand>>
 {
-    public EmployeeProfileExternalIdentifier EmployeeProfile { get; set; }
+    public EmployeeProfileIdentifier EmployeeProfile { get; set; }
     public string Degree { get; set; }
     public string Institution { get; set; }
     public int CompletionYear { get; set; }
@@ -27,7 +27,7 @@ public class CreateEmployeeEducationCommandHandler : IRequestHandler<CreateEmplo
     public async Task<Result<CreateEmployeeEducationCommand>> Handle(CreateEmployeeEducationCommand request, CancellationToken cancellationToken)
     {
         var employeeProfile = await this.employeeProfilesRepository
-            .GetAsync(request.EmployeeProfile.ExternalIdentifier);
+            .GetAsync(request.EmployeeProfile.Id);
 
         if (employeeProfile is null) 
         {
@@ -56,13 +56,15 @@ public class CreateEmployeeEducationCommandHandler : IRequestHandler<CreateEmplo
 
 public static class CreateEmployeeEducationCommandExtension 
 {
-    public static CreateEmployeeEducationCommand StructureRequest(this CreateEmployeeEducationCommand request, string employeeExternalIdentifier)
+    public static CreateEmployeeEducationCommand StructureRequest(
+        this CreateEmployeeEducationCommand request, 
+        int id)
     {
         return new CreateEmployeeEducationCommand
         {
-            EmployeeProfile = new EmployeeProfileExternalIdentifier
+            EmployeeProfile = new EmployeeProfileIdentifier
             {
-                ExternalIdentifier = employeeExternalIdentifier,
+                Id = id,
             },
             Degree = request.Degree,
             CompletionYear = request.CompletionYear,

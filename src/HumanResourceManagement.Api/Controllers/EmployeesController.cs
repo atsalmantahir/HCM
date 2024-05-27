@@ -108,15 +108,15 @@ public class EmployeesController : ControllerBase
     /// <summary>
     /// update profile
     /// </summary>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <param name="request"></param>
     /// <returns></returns>
     /// <exception cref="BadRequestException"></exception>
     [Authorize]
     [HttpPut]
-    [Route("profile/{externalIdentifier}")]
+    [Route("profile/{id}")]
     public async Task<IResult> UpdateEmployeeProfileAsync(
-        string externalIdentifier,
+        int id,
         [FromBody] UpdateEmployeeProfileCommand request)
     {
         if (!ModelState.IsValid)
@@ -124,27 +124,27 @@ public class EmployeesController : ControllerBase
             return Results.BadRequest(ModelState);
         }
 
-        if (externalIdentifier != request?.ExternalIdentifier)
+        if (id != request.EmployeeProfileId)
         {
             throw new BadRequestException("Employee External Identifier not match");
         }
 
-        var response = await mediator.Send(request.StructureRequest(externalIdentifier));
+        var response = await mediator.Send(request.StructureRequest(id));
         return Results.Ok(response);
     }
 
     /// <summary>
     /// delete employee profile
     /// </summary>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     [Authorize]
     [HttpDelete]
-    [Route("profile/{externalIdentifier}")]
+    [Route("profile/{id}")]
     public async Task<IResult> DeleteEmployeeProfileAsync(
-        string externalIdentifier)
+        int id)
     {
-        var response = await mediator.Send(new DeleteEmployeeProfileCommand(externalIdentifier));
+        var response = await mediator.Send(new DeleteEmployeeProfileCommand(id));
         return Results.Ok(response);
     }
 
@@ -165,15 +165,15 @@ public class EmployeesController : ControllerBase
     /// <summary>
     /// get employee profile
     /// </summary>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     [Authorize]
     [HttpGet]
-    [Route("profile/{externalIdentifier}")]
+    [Route("profile/{id}")]
     public async Task<IResult> GetEmployeeProfileAsync(
-        string externalIdentifier)
+        int id)
     {
-        var response = await mediator.Send(new GetEmployeeProfileQuery(externalIdentifier));
+        var response = await mediator.Send(new GetEmployeeProfileQuery(id));
         return Results.Ok(response);
     }
 }

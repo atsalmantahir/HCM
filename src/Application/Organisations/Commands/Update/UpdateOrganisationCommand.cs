@@ -8,7 +8,7 @@ namespace HumanResourceManagement.Application.Organisations.Commands.Update;
 public record UpdateOrganisationCommand : IRequest<UpdateOrganisationCommand>
 {
     [Required]
-    public string ExternalIdentifier { get; set; }
+    public int Id { get; set; }
 
     [Required]
     public string OrganisationName { get; set; }
@@ -39,7 +39,7 @@ public class UpdateOrganisationCommandCommandHandler : IRequestHandler<UpdateOrg
 
     public async Task<UpdateOrganisationCommand> Handle(UpdateOrganisationCommand request, CancellationToken cancellationToken)
     {
-        var organistaion = await this.repository.GetAsync(request.ExternalIdentifier);
+        var organistaion = await this.repository.GetAsync(request.Id);
         var entity = request.ToUpdateOrganisationEntity(organistaion.OrganisationId);
 
         // todo

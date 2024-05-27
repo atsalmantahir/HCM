@@ -18,7 +18,7 @@ public class EmployeeProfileVM
         Designation = new DesignationVM();
     }
 
-    public string ExternalIdentifier { get; set; }
+    public int Id { get; set; }
     public string EmployeeName { get; set; }
     public string EmployeeCode { get; set; }
 

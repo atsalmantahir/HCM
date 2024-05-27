@@ -8,8 +8,6 @@ public class LoanApprovalConfiguration : IEntityTypeConfiguration<LoanApproval>
 {
     public void Configure(EntityTypeBuilder<LoanApproval> builder)
     {
-        builder.Property(e => e.ExternalIdentifier)
-                  .ValueGeneratedOnAdd()
-                  .HasDefaultValueSql("NEWID()");
+        
     }
 }

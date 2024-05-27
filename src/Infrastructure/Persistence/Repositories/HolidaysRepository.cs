@@ -30,15 +30,6 @@ public class HolidaysRepository : IHolidaysRepository
             .FirstOrDefaultAsync(x => x.HolidayId == id && x.IsDeleted == false);
     }
 
-    public async Task<Holiday> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .Holidays
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
-    }
-
     public IQueryable<Holiday> GetAll()
     {
         return this.context.Holidays.Where(x => x.IsDeleted == false)

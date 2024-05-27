@@ -6,7 +6,6 @@ public class EmployeeDocument : BaseAuditableEntity
 {
     [Column("EmployeeDocumentId")]
     public int EmployeeDocumentId { get; set; }
-    public string ExternalIdentifier { get; set; }
     public DocumentType Type { get; set; }
     public string FilePath { get; set; }
 

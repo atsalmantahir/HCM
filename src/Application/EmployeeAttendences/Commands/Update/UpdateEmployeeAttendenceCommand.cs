@@ -8,8 +8,8 @@ namespace HumanResourceManagement.Application.EmployeeAttendences.Commands.Updat
 
 public record UpdateEmployeeAttendenceCommand : IRequest<UpdateEmployeeAttendenceCommand>
 {
-    public string ExternalIdentifier { get; set; }
-    public EntityExternalIdentifier EmployeeProfile { get; set; }
+    public int Id { get; set; }
+    public EntityIdentifier EmployeeProfile { get; set; }
     public DateOnly AttendanceDate { get; set; }
     public TimeOnly TimeIn { get; set; }
     public TimeOnly TimeOut { get; set; }
@@ -30,16 +30,16 @@ public class UpdateEmployeeAttendenceCommandHandler : IRequestHandler<UpdateEmpl
 
     public async Task<UpdateEmployeeAttendenceCommand> Handle(UpdateEmployeeAttendenceCommand request, CancellationToken cancellationToken)
     {
-        var employeeProfile = await this.employeeProfilesRepository.GetAsync(request?.EmployeeProfile?.ExternalIdentifier);
+        var employeeProfile = await this.employeeProfilesRepository.GetAsync(request.EmployeeProfile.Id);
         if (employeeProfile is null)
         {
-            throw new EmployeeNotFoundException(request?.EmployeeProfile?.ExternalIdentifier);
+            throw new EmployeeNotFoundException(request.EmployeeProfile.Id.ToString());
         }
 
-        var employeeAttendance = await this.repository.GetAsync(request.ExternalIdentifier);
+        var employeeAttendance = await this.repository.GetAsync(request.Id);
         if (employeeAttendance is null)
         {
-            throw new EmployeeAttendenceNotFoundException(request?.ExternalIdentifier);
+            throw new EmployeeAttendenceNotFoundException(request.Id.ToString());
         }
 
         var entity = request.ToEntity(employeeProfile.EmployeeProfileId, employeeAttendance.EmployeeAttendanceId);

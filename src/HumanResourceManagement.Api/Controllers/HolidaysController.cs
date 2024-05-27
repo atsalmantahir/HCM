@@ -50,13 +50,13 @@ public class HolidaysController : ControllerBase
     /// <summary>
     /// update
     /// </summary>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpPut]
-    [Route("{externalIdentifier}")]
+    [Route("{id}")]
     public async Task<IResult> UpdateHolidayAsync(
-        string externalIdentifier,
+        int id,
         [FromBody] UpdateHolidayCommand request)
     {
         if (!ModelState.IsValid)
@@ -64,26 +64,26 @@ public class HolidaysController : ControllerBase
             return Results.BadRequest(ModelState);
         }
 
-        if (externalIdentifier != request?.ExternalIdentifier)
+        if (id != request?.id)
         {
             return Results.BadRequest("External Identifier not match");
         }
 
-        var response = await mediator.Send(request.StructureRequest(externalIdentifier));
+        var response = await mediator.Send(request.StructureRequest(id));
         return Results.Ok(response);
     }
 
     /// <summary>
     /// delete
     /// </summary>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Route("{externalIdentifier}")]
+    [Route("{id}")]
     public async Task<IResult> DeleteHolidayAsync(
-        string externalIdentifier)
+        int id)
     {
-        var response = await mediator.Send(new DeleteHolidayCommand(externalIdentifier));
+        var response = await mediator.Send(new DeleteHolidayCommand(id));
         return Results.Ok(response);
     }
 
@@ -102,14 +102,14 @@ public class HolidaysController : ControllerBase
     /// <summary>
     /// get single
     /// </summary>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet]
-    [Route("{externalIdentifier}")]
+    [Route("{id}")]
     public async Task<IResult> GetHolidayAsync(
-        string externalIdentifier)
+        int id)
     {
-        var response = await mediator.Send(new GetHolidayQuery(externalIdentifier));
+        var response = await mediator.Send(new GetHolidayQuery(id));
         return Results.Ok(response);
     }
 }

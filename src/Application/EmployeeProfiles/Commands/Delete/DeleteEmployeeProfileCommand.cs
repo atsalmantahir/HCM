@@ -4,7 +4,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.EmployeeProfiles.Commands.Delete;
 
-public record DeleteEmployeeProfileCommand(string externalIdentifier) : IRequest<DeleteEmployeeProfileCommand>
+public record DeleteEmployeeProfileCommand(int id) : IRequest<DeleteEmployeeProfileCommand>
 {
     public bool IsDeleted { get; set; }
 }
@@ -20,15 +20,15 @@ public class DeleteEmployeeProfileCommandHandler : IRequestHandler<DeleteEmploye
 
     public async Task<DeleteEmployeeProfileCommand> Handle(DeleteEmployeeProfileCommand request, CancellationToken cancellationToken)
     {
-        var employeeProfile = await this.repository.GetAsync(request.externalIdentifier);
+        var employeeProfile = await this.repository.GetAsync(request.id);
         if (employeeProfile == null)
         {
-            throw new EmployeeNotFoundException(request.externalIdentifier);
+            throw new EmployeeNotFoundException(request.id.ToString());
         }
 
         await this.repository.DeleteAsync(employeeProfile, new CancellationToken());
 
-        return new DeleteEmployeeProfileCommand(request.externalIdentifier)
+        return new DeleteEmployeeProfileCommand(request.id)
         {
             IsDeleted = true,
         };

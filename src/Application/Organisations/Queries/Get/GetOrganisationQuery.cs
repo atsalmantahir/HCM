@@ -4,7 +4,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.Organisations.Queries.Get;
 
-public record GetOrganisationQuery(string externalIdentifier) : IRequest<OrganisationVM>;
+public record GetOrganisationQuery(int id) : IRequest<OrganisationVM>;
 
 public class GetOrganisationQueryHandler : IRequestHandler<GetOrganisationQuery, OrganisationVM>
 {
@@ -17,7 +17,7 @@ public class GetOrganisationQueryHandler : IRequestHandler<GetOrganisationQuery,
 
     public async Task<OrganisationVM> Handle(GetOrganisationQuery request, CancellationToken cancellationToken)
     {
-        var organisation = await this.repository.GetAsync(request.externalIdentifier);
+        var organisation = await this.repository.GetAsync(request.id);
         return organisation.ToQueryOrganisationDto();
     }
 }

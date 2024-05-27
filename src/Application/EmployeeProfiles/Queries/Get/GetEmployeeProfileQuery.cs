@@ -5,7 +5,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.EmployeeProfiles.Queries.Get;
 
-public record GetEmployeeProfileQuery(string externalIdentifier) : IRequest<EmployeeProfileVM>;
+public record GetEmployeeProfileQuery(int id) : IRequest<EmployeeProfileVM>;
 
 public class GetEmployeeProfileQueryHandler : IRequestHandler<GetEmployeeProfileQuery, EmployeeProfileVM>
 {
@@ -18,10 +18,10 @@ public class GetEmployeeProfileQueryHandler : IRequestHandler<GetEmployeeProfile
 
     public async Task<EmployeeProfileVM> Handle(GetEmployeeProfileQuery request, CancellationToken cancellationToken)
     {
-        var employeeProfile = await repository.GetAsync(request.externalIdentifier);
+        var employeeProfile = await repository.GetAsync(request.id);
         if (employeeProfile is null) 
         {
-            throw new EmployeeNotFoundException(request.externalIdentifier);
+            throw new EmployeeNotFoundException(request.id.ToString());
         }
 
         return employeeProfile.ToDto();

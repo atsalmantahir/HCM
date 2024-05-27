@@ -10,10 +10,10 @@ namespace HumanResourceManagement.Application.Departments.Commands.Update;
 public class UpdateDepartmentCommand : IRequest<UpdateDepartmentCommand>
 {
 
-    public EntityExternalIdentifier Organisation { get; set; }
+    public EntityIdentifier Organisation { get; set; }
 
     [Required]
-    public string ExternalIdentifier { get; set; }
+    public int Id { get; set; }
 
     [Required]
     public string DepartmentName { get; set; }
@@ -34,19 +34,19 @@ public class UpdateDepartmentCommandHandler : IRequestHandler<UpdateDepartmentCo
 
     public async Task<UpdateDepartmentCommand> Handle(UpdateDepartmentCommand request, CancellationToken cancellationToken)
     {
-        var organistaion = await this.organisationsRepository.GetAsync(request.Organisation.ExternalIdentifier);
+        var organistaion = await this.organisationsRepository.GetAsync(request.Organisation.Id);
         if (organistaion is null)
         {
-            throw new OrganisationNotFoundException(request.Organisation.ExternalIdentifier);
+            throw new OrganisationNotFoundException(request.Organisation.Id.ToString());
         }
 
-        var department = await this.repository.GetAsync(organistaion.ExternalIdentifier, request.ExternalIdentifier);
+        var department = await this.repository.GetAsync(request.Id);
         if (department is null) 
         {
-            throw new DepartmentNotFoundException(request.ExternalIdentifier);
+            throw new DepartmentNotFoundException(request.Id.ToString());
         }
 
-        var departments = this.repository.GetAll(organistaion.ExternalIdentifier);
+        var departments = this.repository.GetAll(organistaion.OrganisationId);
         if (departments.Any(x => x.DepartmentName == request.DepartmentName))
         {
             throw new ConflictRequestException($"Department : '{request.DepartmentName}' already exists");

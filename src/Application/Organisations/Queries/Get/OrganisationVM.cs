@@ -4,8 +4,7 @@ namespace HumanResourceManagement.Application.Organisations.Queries.Get;
 
 public class OrganisationVM
 {
-    public string ExternalIdentifier { get; set; }
-
+    public int Id { get; set; }
     public string OrganisationName { get; set; }
 
     public string Logo { get; set; }

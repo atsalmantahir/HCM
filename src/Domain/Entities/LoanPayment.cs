@@ -8,7 +8,6 @@ public class LoanPayment : BaseAuditableEntity
 
     public int LoanPaymentId { get; set; }
 
-    public string ExternalIdentifier { get; set; }
 
     public decimal AmountPaid { get; set; }
     public DateTime PaymentDate { get; set; }

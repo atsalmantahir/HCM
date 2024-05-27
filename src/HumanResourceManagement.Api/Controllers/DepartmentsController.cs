@@ -47,9 +47,9 @@ public class DepartmentsController : ControllerBase
     /// <param name="createDepartmentCommand"></param>
     /// <returns></returns>
     [HttpPost]
-    [Route("organisations/{organisationExternalIdentifier}/departments")]
+    [Route("organisations/{organisationId}/departments")]
     public async Task<IResult> CreateDepartmentAsync(
-        string organisationExternalIdentifier,
+        int organisationId,
         [FromBody] CreateDepartmentCommand createDepartmentCommand)
     {
         if (!ModelState.IsValid)
@@ -57,7 +57,7 @@ public class DepartmentsController : ControllerBase
             return Results.BadRequest(ModelState);
         }
 
-        if (organisationExternalIdentifier != createDepartmentCommand.Organisation.ExternalIdentifier)
+        if (organisationId != createDepartmentCommand.Organisation.Id)
         {
             return Results.BadRequest("Organistaion External Identifier mis match!");
         }
@@ -70,17 +70,17 @@ public class DepartmentsController : ControllerBase
     /// get department
     /// </summary>
     /// <param name="organisationExternalIdentifier"></param>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
 
     [HttpGet]
-    [Route("organisations/{organisationExternalIdentifier}/departments/{externalIdentifier}")]
+    [Route("organisations/{organisationId}/departments/{id}")]
 
     public async Task<IResult> GetDepartmentAsync(
-        string organisationExternalIdentifier,
-        string externalIdentifier)
+        int organisationId,
+        int id)
     {
-        var response = await mediator.Send(new GetDepartmentQuery(organisationExternalIdentifier, externalIdentifier));
+        var response = await mediator.Send(new GetDepartmentQuery(organisationId, id));
         return Results.Ok(response);
     }
 
@@ -91,14 +91,14 @@ public class DepartmentsController : ControllerBase
     /// <param name="query"></param>
     /// <returns></returns>
     [HttpGet]
-    [Route("organisations/{organisationExternalIdentifier}/departments")]
+    [Route("organisations/{organisationId}/departments")]
 
     public async Task<IResult> GetDepartmentsAsync(
-        string organisationExternalIdentifier,
+        int organisationId,
         [FromQuery] GetDepartmentsQuery query)
     {
 
-        var response = await mediator.Send(new GetDepartmentsQuery(organisationExternalIdentifier));
+        var response = await mediator.Send(new GetDepartmentsQuery(organisationId));
         return Results.Ok(response);
     }
 
@@ -106,14 +106,14 @@ public class DepartmentsController : ControllerBase
     /// update department
     /// </summary>
     /// <param name="organisationExternalIdentifier"></param>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <param name="updateDepartmentCommand"></param>
     /// <returns></returns>
     [HttpPut]
-    [Route("organisations/{organisationExternalIdentifier}/departments/{externalIdentifier}")]
+    [Route("organisations/{organisationId}/departments/{id}")]
     public async Task<IResult> UpdateDepartmentAsync(
-        string organisationExternalIdentifier,
-        string externalIdentifier,
+        int organisationId,
+        int id,
         [FromBody] UpdateDepartmentCommand updateDepartmentCommand)
     {
         if (!ModelState.IsValid)
@@ -121,12 +121,12 @@ public class DepartmentsController : ControllerBase
             return Results.BadRequest(ModelState);
         }
 
-        if (organisationExternalIdentifier != updateDepartmentCommand.Organisation.ExternalIdentifier)
+        if (organisationId != updateDepartmentCommand.Organisation.Id)
         {
             return Results.BadRequest("Organistaion External Identifier mis match!");
         }
 
-        if (externalIdentifier != updateDepartmentCommand.ExternalIdentifier) 
+        if (id != updateDepartmentCommand.Id) 
         {
             return Results.BadRequest();
         }
@@ -138,15 +138,15 @@ public class DepartmentsController : ControllerBase
     /// <summary>
     /// delete department
     /// </summary>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Route("organisations/{organisationExternalIdentifier}/departments/{externalIdentifier}")]
+    [Route("organisations/{organisationId}/departments/{id}")]
     public async Task<IResult> DeleteDepartmentAsync(
-        string organisationExternalIdentifier,
-        string externalIdentifier)
+        int organisationId,
+        int id)
     {
-        var response = await mediator.Send(new DeleteDepartmentCommand(organisationExternalIdentifier, externalIdentifier));
+        var response = await mediator.Send(new DeleteDepartmentCommand(organisationId, id));
         return Results.NoContent();
     }
 }

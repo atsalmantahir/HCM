@@ -8,7 +8,7 @@ namespace HumanResourceManagement.Application.TaxSlabs.Commands.Update;
 
 public record UpdateTaxSlabCommand : IRequest<UpdateTaxSlabCommand>
 {
-    public string ExternalIdentifier { get; set; }
+    public int Id { get; set; }
     public DateTime ValidFrom { get; set; }
     public DateTime ValidTill { get; set; }
     public decimal MinimumIncome { get; set; }
@@ -29,7 +29,7 @@ public class UpdateTaxSlabCommandHandler : IRequestHandler<UpdateTaxSlabCommand,
 
     public async Task<UpdateTaxSlabCommand> Handle(UpdateTaxSlabCommand request, CancellationToken cancellationToken)
     {
-        var taxSlab = await this.taxSlabsRepository.GetAsync(request.ExternalIdentifier);
+        var taxSlab = await this.taxSlabsRepository.GetAsync(request.Id);
 
         if (taxSlab is null) 
         {
@@ -51,11 +51,11 @@ public static class UpdateTaxSlabCommandExtention
 {
     public static UpdateTaxSlabCommand StructureRequest(
         this UpdateTaxSlabCommand request,
-        string externalIdentifier)
+        int id)
     {
         return new UpdateTaxSlabCommand
         {
-            ExternalIdentifier = externalIdentifier,
+            Id = id,
             ValidFrom = request.ValidFrom,
             ValidTill = request.ValidTill,
             MinimumIncome = request.MinimumIncome,

@@ -10,12 +10,9 @@ namespace HumanResourceManagement.Application.EmployeeCompensations.Commands.Cre
 
 public record UpdateEmployeeCompensationCommand : IRequest<UpdateEmployeeCompensationCommand>
 {
-    public string ExternalIdentifier { get; set; }
-    public EntityExternalIdentifier EmployeeProfile { get; set; }
+    public int EmployeeCompenstaionId { get; set; }
+    public EntityIdentifier EmployeeProfile { get; set; }
     public decimal BasicSalary { get; set; }
-    public decimal HouseRentAllowance { get; set; }
-    public decimal MedicalAllowance { get; set; }
-    public decimal UtilityAllowance { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public PaymentMethod ModeOfPayment { get; set; }
@@ -37,19 +34,19 @@ public class UpdateEmployeeCompensationCommandHandler : IRequestHandler<UpdateEm
     public async Task<UpdateEmployeeCompensationCommand> Handle(UpdateEmployeeCompensationCommand request, CancellationToken cancellationToken)
     {
         var employeeProfile = await this.employeeProfilesRepository
-            .GetAsync(request.EmployeeProfile.ExternalIdentifier);
+            .GetAsync(request.EmployeeProfile.Id);
 
         if (employeeProfile is null)
         {
-            throw new EmployeeNotFoundException(request.EmployeeProfile?.ExternalIdentifier);
+            throw new EmployeeNotFoundException(request.EmployeeProfile.Id.ToString());
         }
 
         var employeeCompensation = await this.repository
-            .GetAsync(request.ExternalIdentifier);
+            .GetAsync(request.EmployeeCompenstaionId);
 
         if (employeeCompensation is null)
         {
-            throw new EmployeeCompensationNotFoundException(request.ExternalIdentifier);
+            throw new EmployeeCompensationNotFoundException(request.EmployeeCompenstaionId.ToString());
         }
 
         if (employeeProfile.EmployeeProfileId != employeeCompensation.EmployeeProfileId) 
@@ -71,22 +68,17 @@ public class UpdateEmployeeCompensationCommandHandler : IRequestHandler<UpdateEm
 public static class UpdateEmployeeCompensationCommandExtention
 {
     public static UpdateEmployeeCompensationCommand StructureRequest(
-        this UpdateEmployeeCompensationCommand request,
-        string externalIdentifier,
-        string employeeProfileExternalIdentifier)
+        this UpdateEmployeeCompensationCommand request)
     {
         return new UpdateEmployeeCompensationCommand
         {
-            ExternalIdentifier = externalIdentifier,
+            EmployeeCompenstaionId = request.EmployeeCompenstaionId,
             BasicSalary = request.BasicSalary,
-            EmployeeProfile = new EntityExternalIdentifier
+            EmployeeProfile = new EntityIdentifier
             {
-                ExternalIdentifier = employeeProfileExternalIdentifier
+                Id = request.EmployeeProfile.Id,
             },
-            HouseRentAllowance = request.HouseRentAllowance,
-            MedicalAllowance = request.MedicalAllowance,
             ModeOfPayment = request.ModeOfPayment,
-            UtilityAllowance = request.UtilityAllowance
         };
     }
 }

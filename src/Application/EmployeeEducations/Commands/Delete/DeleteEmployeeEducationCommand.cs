@@ -3,7 +3,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.EmployeeEducations.Commands.Delete;
 
-public record DeleteEmployeeEducationCommand(string employeeProfileExternalIdentifier, string externalIdentifier) : IRequest<DeleteEmployeeEducationCommand>
+public record DeleteEmployeeEducationCommand(int employeeProfileId, int Id) : IRequest<DeleteEmployeeEducationCommand>
 {
     public bool IsDeleted { get; set; }
 }
@@ -22,13 +22,13 @@ public class DeleteEmployeeEducationCommandHandler : IRequestHandler<DeleteEmplo
 
     public async Task<DeleteEmployeeEducationCommand> Handle(DeleteEmployeeEducationCommand request, CancellationToken cancellationToken)
     {
-        var employeeProfile = await this.employeeProfilesRepository.GetAsync(request.employeeProfileExternalIdentifier);
+        var employeeProfile = await this.employeeProfilesRepository.GetAsync(request.employeeProfileId);
         if (employeeProfile == null)
         {
             return null;
         }
 
-        var employeeEducation = await this.repository.GetAsync(request.externalIdentifier);
+        var employeeEducation = await this.repository.GetAsync(request.Id);
         if (employeeEducation == null)
         {
             return null;
@@ -36,7 +36,7 @@ public class DeleteEmployeeEducationCommandHandler : IRequestHandler<DeleteEmplo
 
         await this.repository.DeleteAsync(employeeEducation, new CancellationToken());
 
-        return new DeleteEmployeeEducationCommand(request.employeeProfileExternalIdentifier, request.externalIdentifier)
+        return new DeleteEmployeeEducationCommand(request.employeeProfileId, request.Id)
         {
             IsDeleted = true,
         };

@@ -10,7 +10,7 @@ namespace HumanResourceManagement.Application.EmployeeAttendences.Commands.Creat
 
 public record CreateEmployeeAttendenceCommand : IRequest<CreateEmployeeAttendenceCommand>
 {
-    public EntityExternalIdentifier EmployeeProfile { get; set; }
+    public EntityIdentifier EmployeeProfile { get; set; }
     public string AttendanceDate { get; set; }
     public string TimeIn { get; set; }
     public string TimeOut { get; set; }
@@ -31,17 +31,17 @@ public class CreateEmployeeAttendenceCommandHandler : IRequestHandler<CreateEmpl
 
     public async Task<CreateEmployeeAttendenceCommand> Handle(CreateEmployeeAttendenceCommand request, CancellationToken cancellationToken)
     {
-        var employeeProfile = await this.employeeProfilesRepository.GetAsync(request?.EmployeeProfile?.ExternalIdentifier);
+        var employeeProfile = await this.employeeProfilesRepository.GetAsync(request.EmployeeProfile.Id);
         if (employeeProfile is null)
         {
-            throw new EmployeeNotFoundException(request.EmployeeProfile.ExternalIdentifier);
+            throw new EmployeeNotFoundException(request.EmployeeProfile.Id.ToString());
         }
 
         var employeeAttendance = this.repository.GetAll();
         var attendanceDate = DateOnly.Parse(request.AttendanceDate);
         if (employeeAttendance is not null 
             && employeeAttendance.Any(x => x.AttendanceDate == attendanceDate 
-            && x.EmployeeProfile.ExternalIdentifier == request.EmployeeProfile.ExternalIdentifier)) 
+            && x.EmployeeProfile.EmployeeProfileId == request.EmployeeProfile.Id)) 
         {
             throw new ConflictRequestException("Already added attendance for this date");
         }

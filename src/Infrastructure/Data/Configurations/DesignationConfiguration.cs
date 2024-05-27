@@ -8,8 +8,5 @@ public class DesignationConfiguration : IEntityTypeConfiguration<Designation>
 {
     public void Configure(EntityTypeBuilder<Designation> builder)
     {
-        builder.Property(e => e.ExternalIdentifier)
-                  .ValueGeneratedOnAdd()
-                  .HasDefaultValueSql("NEWID()");
     }
 }

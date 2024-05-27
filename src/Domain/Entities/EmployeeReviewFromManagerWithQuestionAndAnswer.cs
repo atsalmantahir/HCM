@@ -7,7 +7,6 @@ public class EmployeeReviewFromManagerWithQuestionAndAnswer : BaseAuditableEntit
     [Column("EmployeeReviewFromManagerWithQuestionAndAnswerId")]
 
     public int EmployeeReviewFromManagerWithQuestionAndAnswerId { get; set; }
-    public string ExternalIdentifier { get; set; }
 
     public string AdditionalComments { get; set; }
     public string AnswerGiven { get; set; }

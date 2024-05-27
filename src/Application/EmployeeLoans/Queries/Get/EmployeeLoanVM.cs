@@ -11,7 +11,7 @@ namespace HumanResourceManagement.Application.EmployeeLoans.Queries.Get;
 
 public class EmployeeLoanVM
 {
-    public string ExternalIdentifier { get; set; }
+    public int Id { get; set; }
     public EmployeeProfileVM EmployeeProfile { get; set; }
     public decimal LoanAmount { get; set; }
 

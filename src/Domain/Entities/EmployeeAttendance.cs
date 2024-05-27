@@ -6,7 +6,6 @@ public class EmployeeAttendance : BaseAuditableEntity
 {
     [Column("EmployeeAttendanceId")]
     public int EmployeeAttendanceId { get; set; }
-    public string ExternalIdentifier { get; set; }
     public DateOnly AttendanceDate { get; set; }
     public TimeOnly TimeIn { get; set; }
     public TimeOnly TimeOut { get; set; }

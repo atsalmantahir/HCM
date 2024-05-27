@@ -10,10 +10,10 @@ namespace HumanResourceManagement.Application.EmployeeProfiles.Commands.Update;
 
 public record UpdateEmployeeProfileCommand : IRequest<UpdateEmployeeProfileCommand>
 {
-    public EntityExternalIdentifier Designation { get; set; }
+    public EntityIdentifier Designation { get; set; }
 
     [Required]
-    public string ExternalIdentifier { get; set; }
+    public int EmployeeProfileId { get; set; }
     
     [Required]
     public string EmployeeName { get; set; }
@@ -62,17 +62,17 @@ public class UpdateEmployeeProfileCommandHandler : IRequestHandler<UpdateEmploye
     public async Task<UpdateEmployeeProfileCommand> Handle(UpdateEmployeeProfileCommand request, CancellationToken cancellationToken)
     {
         var employeeProfile = await this.employeeProfilesRepository
-            .GetAsync(request.ExternalIdentifier);
+            .GetAsync(request.EmployeeProfileId);
 
         if (employeeProfile is null)
         {
-            throw new EmployeeNotFoundException(request.ExternalIdentifier);
+            throw new EmployeeNotFoundException(request.EmployeeProfileId.ToString());
         }
 
-        var designation = await this.designationsRepository .GetAsync(request.Designation.ExternalIdentifier);
+        var designation = await this.designationsRepository.GetAsync(request.Designation.Id);
         if (designation is null)
         {
-            throw new DesignationNotFoundException(request.Designation?.ExternalIdentifier);
+            throw new DesignationNotFoundException(request.Designation.Id.ToString());
         }
 
         var entity = request.ToEmployeeProfileEntity(
@@ -93,13 +93,16 @@ public static class UpdateEmployeeProfileCommandExtention
 {
     public static UpdateEmployeeProfileCommand StructureRequest(
         this UpdateEmployeeProfileCommand request,
-        string externalIdentifier)
+        int employeeProfileId)
     {
         return new UpdateEmployeeProfileCommand
         {
-            ExternalIdentifier = externalIdentifier,
+            EmployeeProfileId = employeeProfileId,
             Contact = request.Contact,
-            Designation = new EntityExternalIdentifier { ExternalIdentifier = request.Designation.ExternalIdentifier },
+            Designation = new EntityIdentifier 
+            { 
+                Id = request.Designation.Id 
+            },
             ActiveStatus = request.ActiveStatus,
             LastWorkingDayDate = request.LastWorkingDayDate,
             EmployeeCode = request.EmployeeCode,

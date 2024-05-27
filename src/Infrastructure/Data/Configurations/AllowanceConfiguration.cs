@@ -8,8 +8,6 @@ public class AllowanceConfiguration : IEntityTypeConfiguration<Allowance>
 {
     public void Configure(EntityTypeBuilder<Allowance> builder)
     {
-        builder.Property(e => e.ExternalIdentifier)
-                  .ValueGeneratedOnAdd()
-                  .HasDefaultValueSql("NEWID()");
+        
     }
 }

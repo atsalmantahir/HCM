@@ -5,7 +5,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.EmployeeAttendences.Queries.Get;
 
-public record GetEmployeeAttendenceQuery(string employeeProfileExternalIdentifier, string externalIdentifier) : IRequest<EmployeeAttendenceVM>;
+public record GetEmployeeAttendenceQuery(int employeeProfileId, int Id) : IRequest<EmployeeAttendenceVM>;
 
 public class GetEmployeeAttendenceQueryHandler : IRequestHandler<GetEmployeeAttendenceQuery, EmployeeAttendenceVM>
 {
@@ -20,16 +20,16 @@ public class GetEmployeeAttendenceQueryHandler : IRequestHandler<GetEmployeeAtte
 
     public async Task<EmployeeAttendenceVM> Handle(GetEmployeeAttendenceQuery request, CancellationToken cancellationToken)
     {
-        var employeeProfile = await this.employeeProfilesRepository.GetAsync(request.employeeProfileExternalIdentifier);
+        var employeeProfile = await this.employeeProfilesRepository.GetAsync(request.employeeProfileId);
         if (employeeProfile is null) 
         {
-            throw new EmployeeNotFoundException(request.employeeProfileExternalIdentifier);
+            throw new EmployeeNotFoundException(request.employeeProfileId.ToString());
         }
 
-        var employeeAttendance = await this.repository.GetAsync(request.externalIdentifier);
+        var employeeAttendance = await this.repository.GetAsync(request.Id);
         if (employeeAttendance is null)
         {
-            throw new EmployeeAttendenceNotFoundException(request.externalIdentifier);
+            throw new EmployeeAttendenceNotFoundException(request.Id.ToString());
         }
 
         return employeeAttendance.ToDto();

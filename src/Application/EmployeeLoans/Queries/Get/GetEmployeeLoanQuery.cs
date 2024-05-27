@@ -4,7 +4,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.EmployeeLoans.Queries.Get;
 
-public record GetEmployeeLoanQuery(string externalIdentifier) : IRequest<EmployeeLoanVM>;
+public record GetEmployeeLoanQuery(int id) : IRequest<EmployeeLoanVM>;
 
 public class GetEmployeeLoanQueryHandler : IRequestHandler<GetEmployeeLoanQuery, EmployeeLoanVM>
 {
@@ -25,10 +25,10 @@ public class GetEmployeeLoanQueryHandler : IRequestHandler<GetEmployeeLoanQuery,
         //    throw new EmployeeNotFoundException(request.externalIdentifier);
         //}
 
-        var employeeLoan = await this.employeeLoansRepository.GetAsync(request.externalIdentifier);
+        var employeeLoan = await this.employeeLoansRepository.GetAsync(request.id);
         if (employeeLoan == null)
         {
-            throw new EmployeeExperienceNotFoundException(request.externalIdentifier);
+            throw new EmployeeExperienceNotFoundException(request.id.ToString());
         }
 
         return employeeLoan.ToDto();

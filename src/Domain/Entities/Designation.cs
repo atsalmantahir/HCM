@@ -7,7 +7,6 @@ public class Designation : BaseAuditableEntity
 {
     [Column("DesignationId")]
     public int DesignationId { get; set; }
-    public string ExternalIdentifier { get; set; }
     public string DesignationName { get; set; }
 
     // Foreign key

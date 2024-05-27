@@ -8,8 +8,6 @@ public class PayrollConfiguration : IEntityTypeConfiguration<Payroll>
 {
     public void Configure(EntityTypeBuilder<Payroll> builder)
     {
-        builder.Property(e => e.ExternalIdentifier)
-                  .ValueGeneratedOnAdd()
-                  .HasDefaultValueSql("NEWID()");
+        
     }
 }

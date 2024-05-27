@@ -38,15 +38,6 @@ public class ReviewQuestionsRepository : IReviewQuestionsRepository
              .FirstOrDefaultAsync(x => x.ReviewQuestionId == id && x.IsDeleted == false);
     }
 
-    public async Task<ReviewQuestion> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .ReviewQuestions
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
-    }
-
     public async Task InsertAsync(ReviewQuestion entity, CancellationToken cancellationToken)
     {
         await this.context.ReviewQuestions.AddAsync(entity);

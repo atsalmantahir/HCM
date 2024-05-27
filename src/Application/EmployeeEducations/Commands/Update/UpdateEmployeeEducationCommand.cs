@@ -7,8 +7,8 @@ namespace HumanResourceManagement.Application.EmployeeEducations.Commands.Update
 
 public record UpdateEmployeeEducationCommand : IRequest<UpdateEmployeeEducationCommand>
 {
-    public string ExternalIdentifier { get; set; }
-    public EmployeeProfileExternalIdentifier EmployeeProfile { get; set; }
+    public int Id { get; set; }
+    public EmployeeProfileIdentifier EmployeeProfile { get; set; }
     public string Degree { get; set; }
     public string Institution { get; set; }
     public int CompletionYear { get; set; }
@@ -29,18 +29,18 @@ public class UpdateTaxSlabCommandHandler : IRequestHandler<UpdateEmployeeEducati
 
     public async Task<UpdateEmployeeEducationCommand> Handle(UpdateEmployeeEducationCommand request, CancellationToken cancellationToken)
     {
-        var employeeProfile = await this.employeeProfilesRepository.GetAsync(request.EmployeeProfile?.ExternalIdentifier);
+        var employeeProfile = await this.employeeProfilesRepository.GetAsync(request.EmployeeProfile.Id);
 
         if (employeeProfile is null)
         {
-            throw new EmployeeNotFoundException(request.EmployeeProfile?.ExternalIdentifier);
+            throw new EmployeeNotFoundException(request.EmployeeProfile.Id.ToString());
         }
 
-        var employeeEducation = await this.employeeEducationsRepository.GetAsync(request.ExternalIdentifier);
+        var employeeEducation = await this.employeeEducationsRepository.GetAsync(request.Id);
 
         if (employeeEducation is null)
         {
-            throw new EmployeeEducationNotFoundException(request.ExternalIdentifier);
+            throw new EmployeeEducationNotFoundException(request.Id.ToString());
         }
 
         var entity = request.ToEntity(employeeProfile.EmployeeProfileId, employeeEducation.EmployeeEducationId);
@@ -58,14 +58,14 @@ public static class UpdateEmployeeEducationCommandExtention
 {
     public static UpdateEmployeeEducationCommand StructureRequest(
         this UpdateEmployeeEducationCommand request,
-        string externalIdentifier)
+        int id)
     {
         return new UpdateEmployeeEducationCommand
         {
-            ExternalIdentifier = externalIdentifier,
-            EmployeeProfile = new EmployeeProfileExternalIdentifier 
+            Id = id,
+            EmployeeProfile = new EmployeeProfileIdentifier 
             {
-                ExternalIdentifier = request.ExternalIdentifier,
+                Id = request.Id,
             },
             CompletionYear = request.CompletionYear,
             Degree = request.Degree,

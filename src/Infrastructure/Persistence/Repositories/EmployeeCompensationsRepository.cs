@@ -33,7 +33,7 @@ public class EmployeeCompensationsRepository : IEmployeeCompensationsRepository
             .FirstOrDefaultAsync(x => x.EmployeeCompensationId == id);
     }
 
-    public async Task<EmployeeCompensation> GetAsync(string externalIdentifier)
+    public async Task<EmployeeCompensation> GetByEmployeeProfileAsync(int employeeProfileId) 
     {
         return await this
             .context
@@ -42,25 +42,24 @@ public class EmployeeCompensationsRepository : IEmployeeCompensationsRepository
             .Include(x => x.EmployeeAllowances)
                 .ThenInclude(x => x.Allowance)
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
-    }
-
-    public async Task<EmployeeCompensation> GetByEmployeeProfileAsync(string employeeProfileExternalIdentifier)
-    {
-        return await this
-            .context
-            .EmployeeCompensations
-            .Include(x => x.EmployeeProfile)
-            .Include(x => x.EmployeeAllowances)
-                .ThenInclude(x => x.Allowance)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.EmployeeProfile.ExternalIdentifier == employeeProfileExternalIdentifier && x.IsDeleted == false);
+            .FirstOrDefaultAsync(x => x.EmployeeProfileId == employeeProfileId);
     }
 
     public IQueryable<EmployeeCompensation> GetAll()
     {
         return this.context.EmployeeCompensations
             .Where(x => x.IsDeleted == false)
+            .Include(x => x.EmployeeProfile)
+            .Include(x => x.EmployeeAllowances)
+                .ThenInclude(x => x.Allowance)
+            .OrderByDescending(x => x.CreatedAt)
+            .ThenByDescending(x => x.LastModifiedAt);
+    }
+
+    public IQueryable<EmployeeCompensation> GetAll(int employeeProfileId)
+    {
+        return this.context.EmployeeCompensations
+            .Where(x => x.IsDeleted == false && x.EmployeeProfileId == employeeProfileId)
             .Include(x => x.EmployeeProfile)
             .Include(x => x.EmployeeAllowances)
                 .ThenInclude(x => x.Allowance)

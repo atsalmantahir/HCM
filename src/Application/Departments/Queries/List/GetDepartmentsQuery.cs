@@ -6,7 +6,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.Departments.Queries.List;
 
-public record GetDepartmentsQuery(string organisationExternalIdentifier) : PaginatedQuery, IRequest<PaginatedList<DepartmentVM>>;
+public record GetDepartmentsQuery(int organisationId) : PaginatedQuery, IRequest<PaginatedList<DepartmentVM>>;
 
 public class GetDepartmentsQueryHandler : IRequestHandler<GetDepartmentsQuery, PaginatedList<DepartmentVM>>
 {
@@ -19,7 +19,7 @@ public class GetDepartmentsQueryHandler : IRequestHandler<GetDepartmentsQuery, P
 
     public async Task<PaginatedList<DepartmentVM>> Handle(GetDepartmentsQuery request, CancellationToken cancellationToken)
     {
-        var departments = this.departmentsRepository.GetAll(request.organisationExternalIdentifier);
+        var departments = this.departmentsRepository.GetAll(request.organisationId);
         var response = departments.ToDto();
         return await PaginatedList<DepartmentVM>.CreateAsync(response, request?.PageNumber, request?.PageSize);
     }

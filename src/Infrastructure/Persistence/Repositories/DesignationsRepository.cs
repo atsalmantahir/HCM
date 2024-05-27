@@ -31,33 +31,11 @@ public class DesignationsRepository : IDesignationsRepository
             .FirstOrDefaultAsync(x => x.DesignationId == id && x.IsDeleted == false);
     }
 
-    public async Task<Designation> GetAsync(string departmentExternalIdentifier, string externalIdentifier)
-    {
-        return await this
-            .context
-            .Designations
-            .Include(x => x.Department)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Department.ExternalIdentifier == departmentExternalIdentifier
-            && x.ExternalIdentifier == externalIdentifier
-            && x.IsDeleted == false);
-    }
-
-    public async Task<Designation> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .Designations
-            .Include(x => x.Department)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
-    }
-
-    public IQueryable<Designation> GetAll(string departmentExternalIdentifier)
+    public IQueryable<Designation> GetAll(int departmentId)
     {
         return this.context.Designations
             .Include(x => x.Department)
-            .Where(x => x.Department.ExternalIdentifier == departmentExternalIdentifier && x.IsDeleted == false)
+            .Where(x => x.Department.DepartmentId == departmentId && x.IsDeleted == false)
             .OrderByDescending(x => x.CreatedAt)
             .ThenByDescending(x => x.LastModifiedAt);
     }

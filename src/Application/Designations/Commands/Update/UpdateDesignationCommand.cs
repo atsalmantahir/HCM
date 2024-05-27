@@ -8,10 +8,10 @@ namespace HumanResourceManagement.Application.Designations.Commands.Update;
 
 public class UpdateDesignationCommand : IRequest<UpdateDesignationCommand>
 {
-    public EntityExternalIdentifier Department { get; set; }
+    public EntityIdentifier Department { get; set; }
 
     [Required]
-    public string ExternalIdentifier { get; set; }
+    public int Id { get; set; }
 
     [Required]
     public string DesignationName { get; set; }
@@ -30,19 +30,19 @@ public class UpdateDesignationCommandHandler : IRequestHandler<UpdateDesignation
 
     public async Task<UpdateDesignationCommand> Handle(UpdateDesignationCommand request, CancellationToken cancellationToken)
     {
-        var department = await this.departmentsRepository.GetAsync(request.Department.ExternalIdentifier);
+        var department = await this.departmentsRepository.GetAsync(request.Department.Id);
         if (department is null)
         {
-            throw new DepartmentNotFoundException($"Department : '{request.Department.ExternalIdentifier}' not found");
+            throw new DepartmentNotFoundException($"Department : '{request.Department.Id}' not found");
         }
 
-        var designation = await this.repository.GetAsync(request.Department.ExternalIdentifier, request.ExternalIdentifier);
+        var designation = await this.repository.GetAsync(request.Id);
         if (designation is null) 
         {
-            throw new DesignationNotFoundException(request.ExternalIdentifier);
+            throw new DesignationNotFoundException(request.Id.ToString());
         }
 
-        var designations = this.repository.GetAll(request.Department.ExternalIdentifier);
+        var designations = this.repository.GetAll(request.Department.Id);
         if (designations.Any(x => x.DesignationName == request.DesignationName))
         {
             throw new ConflictRequestException($"Designation : '{request.DesignationName}' already exists");

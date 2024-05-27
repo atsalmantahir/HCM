@@ -39,15 +39,6 @@ public class LoanGuarantorsRepository : ILoanGuarantorsRepository
             .FirstOrDefaultAsync(x => x.LoanGuarantorID == id && x.IsDeleted == false);
     }
 
-    public async Task<LoanGuarantor> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .LoanGuarantors
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
-    }
-
     public async Task InsertAsync(LoanGuarantor entity, CancellationToken cancellationToken)
     {
         await this.context.LoanGuarantors.AddAsync(entity);

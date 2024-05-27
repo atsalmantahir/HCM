@@ -8,8 +8,5 @@ public class EmployeeAttendanceConfiguration : IEntityTypeConfiguration<Employee
 {
     public void Configure(EntityTypeBuilder<EmployeeAttendance> builder) 
     {
-        builder.Property(e => e.ExternalIdentifier)
-                  .ValueGeneratedOnAdd()
-                  .HasDefaultValueSql("NEWID()");
     }
 }

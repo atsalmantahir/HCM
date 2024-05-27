@@ -8,7 +8,7 @@ namespace HumanResourceManagement.Application.Departments.Commands.Create;
 
 public record CreateDepartmentCommand : IRequest<CreateDepartmentCommand>
 {
-    public EntityExternalIdentifier Organisation { get; set; }
+    public EntityIdentifier Organisation { get; set; }
 
     [Required]
     public string DepartmentName { get; set; }
@@ -29,13 +29,13 @@ public class CreateDepartmentCommandHandler : IRequestHandler<CreateDepartmentCo
 
     public async Task<CreateDepartmentCommand> Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
     {
-        var organistaion = await this.organisationsRepository.GetAsync(request.Organisation.ExternalIdentifier);
+        var organistaion = await this.organisationsRepository.GetAsync(request.Organisation.Id);
         if (organistaion is null)
         {
-            throw new OrganisationNotFoundException(request.Organisation.ExternalIdentifier);
+            throw new OrganisationNotFoundException(request.Organisation.Id.ToString());
         }
 
-        var departments = this.repository.GetAll(request.Organisation?.ExternalIdentifier);
+        var departments = this.repository.GetAll(request.Organisation.Id);
         if (departments.Any(x => x.DepartmentName == request.DepartmentName)) 
         {
             throw new ConflictRequestException($"Department : '{request.DepartmentName}' already exists");

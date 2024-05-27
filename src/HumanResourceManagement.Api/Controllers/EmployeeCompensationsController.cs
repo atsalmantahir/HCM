@@ -20,58 +20,58 @@ public class EmployeeCompensationsController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    [Route("{employeeExternalIdentifier}/compensation")]
+    [Route("{employeeId}/compensation")]
     public async Task<IResult> CreateEmployeeCompensationAsync(
-        string employeeExternalIdentifier,
+        int employeeId,
         [FromBody] CreateEmployeeCompensationCommand request)
     {
-        if (employeeExternalIdentifier != request?.EmployeeProfile?.ExternalIdentifier)
+        if (employeeId != request?.EmployeeProfile.Id)
         {
             throw new BadRequestException("Employee profile external identifier did not matched");
         }
 
-        var response = await mediator.Send(request.StructureRequest(employeeExternalIdentifier));
+        var response = await mediator.Send(request.StructureRequest(employeeId));
         return Results.Created(string.Empty, response);
     }
 
     [Authorize]
     [HttpPut]
-    [Route("{employeeExternalIdentifier}/compensation/{externalIdentifier}")]
+    [Route("{employeeId}/compensation/{id}")]
     public async Task<IResult> UpdateEmployeeCompensationAsync(
-        string externalIdentifier,
-        string employeeExternalIdentifier,
+        int id,
+        int employeeId,
         [FromBody] UpdateEmployeeCompensationCommand request)
     {
-        if (externalIdentifier != request?.ExternalIdentifier)
+        if (id != request?.EmployeeCompenstaionId)
         {
             throw new BadRequestException("External Identifier not match");
         }
 
-        if (employeeExternalIdentifier != request?.EmployeeProfile?.ExternalIdentifier)
+        if (employeeId != request?.EmployeeProfile.Id)
         {
             throw new BadRequestException("Employee External Identifier not match");
         }
 
-        var response = await mediator.Send(request.StructureRequest(externalIdentifier, employeeExternalIdentifier));
+        var response = await mediator.Send(request.StructureRequest());
         return Results.Ok(response);
     }
 
     [Authorize]
     [HttpDelete]
-    [Route("{employeeExternalIdentifier}/compensation/{externalIdentifier}")]
+    [Route("{employeeId}/compensation/{id}")]
     public async Task<IResult> DeleteEmployeeCompensationAsync(
-        string employeeExternalIdentifier,
-        string externalIdentifier)
+        int employeeId,
+        int id)
     {
-        var response = await mediator.Send(new DeleteEmployeeCompensationCommand(employeeExternalIdentifier, externalIdentifier));
+        var response = await mediator.Send(new DeleteEmployeeCompensationCommand(employeeId, id));
         return Results.Ok(response);
     }
 
     [Authorize]
     [HttpGet]
-    [Route("{employeeExternalIdentifier}/compensation")]
+    [Route("{employeeId}/compensation")]
     public async Task<IResult> ListEmployeeCompensationAsync(
-        string employeeExternalIdentifier,
+        string employeeId,
         [FromQuery] GetEmployeeCompensationsQuery query)
     {
         var response = await mediator.Send(query);
@@ -80,12 +80,12 @@ public class EmployeeCompensationsController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    [Route("{employeeExternalIdentifier}/compensation/{externalIdentifier}")]
+    [Route("{employeeId}/compensation/{id}")]
     public async Task<IResult> GetEmployeeCompensationAsync(
-        string employeeExternalIdentifier,
-        string externalIdentifier)
+        int employeeId,
+        int id)
     {
-        var response = await mediator.Send(new GetEmployeeCompensationQuery(employeeExternalIdentifier, externalIdentifier));
+        var response = await mediator.Send(new GetEmployeeCompensationQuery(employeeId, id));
         return Results.Ok(response);
     }
 

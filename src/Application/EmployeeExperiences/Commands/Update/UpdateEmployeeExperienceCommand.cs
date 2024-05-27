@@ -9,8 +9,8 @@ namespace HumanResourceManagement.Application.EmployeeExperiences.Commands.Updat
 
 public record UpdateEmployeeExperienceCommand : IRequest<UpdateEmployeeExperienceCommand>
 {
-    public string ExternalIdentifier { get; set; }
-    public EmployeeProfileExternalIdentifier EmployeeProfile { get; set; }
+    public int Id { get; set; }
+    public EmployeeProfileIdentifier EmployeeProfile { get; set; }
     public string CompanyName { get; set; }
     public string Position { get; set; }
     public DateTime StartDate { get; set; }
@@ -34,17 +34,17 @@ public class UpdateEmployeeExperienceCommandHandler : IRequestHandler<UpdateEmpl
     public async Task<UpdateEmployeeExperienceCommand> Handle(UpdateEmployeeExperienceCommand request, CancellationToken cancellationToken)
     {
         var employeeProfile = await this.employeeProfilesRepository
-            .GetAsync(request.EmployeeProfile.ExternalIdentifier);
+            .GetAsync(request.EmployeeProfile.Id);
 
         if (employeeProfile is null) 
         {
-            throw new EmployeeNotFoundException(request.EmployeeProfile?.ExternalIdentifier);
+            throw new EmployeeNotFoundException(request.EmployeeProfile.Id.ToString());
         }
 
-        var employeeExperience = await this.repository.GetAsync(request.ExternalIdentifier);
+        var employeeExperience = await this.repository.GetAsync(request.Id);
         if (employeeExperience is null) 
         {
-            throw new EmployeeExperienceNotFoundException(request.ExternalIdentifier);
+            throw new EmployeeExperienceNotFoundException(request.Id.ToString());
         }
 
         var entity = request.ToEmployeeExperienceEntity(employeeProfile.EmployeeProfileId, employeeExperience.EmployeeExperienceId);
@@ -62,15 +62,15 @@ public static class UpdateEmployeeExperienceCommandExtention
 {
     public static UpdateEmployeeExperienceCommand StructureRequest(
         this UpdateEmployeeExperienceCommand request, 
-        string employeeExternalIdentifier,
-        string externalIdentifier)
+        int employeeProfileId,
+        int id)
     {
         return new UpdateEmployeeExperienceCommand
         {
-            ExternalIdentifier = externalIdentifier,
-            EmployeeProfile = new EmployeeProfileExternalIdentifier
+            Id = id,
+            EmployeeProfile = new EmployeeProfileIdentifier
             {
-                ExternalIdentifier = employeeExternalIdentifier,
+                Id = employeeProfileId,
             },
             CompanyName = request.CompanyName,
             EndDate = request.EndDate,

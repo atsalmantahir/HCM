@@ -7,7 +7,6 @@ public class EmployeeReview : BaseAuditableEntity
 {
     [Column("EmployeeReviewID")]
     public int EmployeeReviewID { get; set; }
-    public string ExternalIdentifier { get; set; }
 
     public DateTime SubmitBefore { get;set; }
 

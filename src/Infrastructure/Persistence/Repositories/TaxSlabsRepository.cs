@@ -30,15 +30,6 @@ public class TaxSlabsRepository : ITaxSlabsRepository
             .FirstOrDefaultAsync(x => x.TaxSlabId == id && x.IsDeleted == false);
     }
 
-    public async Task<TaxSlab> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .TaxSlabs
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
-    }
-
     public IQueryable<TaxSlab> GetAll()
     {
         return this.context.TaxSlabs.Where(x => x.IsDeleted == false)

@@ -13,7 +13,7 @@ namespace HumanResourceManagement.Application.EmployeeCompensations.Commands.Cre
 
 public record CreateEmployeeCompensationCommand : IRequest<CreateEmployeeCompensationCommand>
 {
-    public EntityExternalIdentifier EmployeeProfile { get; set; }
+    public EntityIdentifier EmployeeProfile { get; set; }
     public decimal BasicSalary { get; set; }
 
     public List<CreateEmployeeAllowanceCommand> EmployeeAllowances { get; init; }
@@ -52,11 +52,11 @@ public class CreateEmployeeCompensationCommandHandler : IRequestHandler<CreateEm
     public async Task<CreateEmployeeCompensationCommand> Handle(CreateEmployeeCompensationCommand request, CancellationToken cancellationToken)
     {
         var employeeProfile = await this.employeeProfilesRepository
-            .GetAsync(request.EmployeeProfile.ExternalIdentifier);
+            .GetAsync(request.EmployeeProfile.Id);
 
         if (employeeProfile is null)
         {
-            throw new EmployeeNotFoundException(request.EmployeeProfile?.ExternalIdentifier);
+            throw new EmployeeNotFoundException(request.EmployeeProfile.Id.ToString());
         }
 
         var employeeCompensations = this.repository.GetAll();
@@ -66,11 +66,11 @@ public class CreateEmployeeCompensationCommandHandler : IRequestHandler<CreateEm
             return null;
         }
 
-        var allowancesExtIdArray = request.EmployeeAllowances.Select(x => x.Allowance.ExternalIdentifier).ToArray();
+        var allowancesExtIdArray = request.EmployeeAllowances.Select(x => x.Allowance.Id).ToArray();
 
         var allowances = this.allowancesRepository
             .GetAll()
-            .Where(x => allowancesExtIdArray.Contains(x.ExternalIdentifier));
+            .Where(x => allowancesExtIdArray.Contains(x.AllowanceId));
 
         if (allowances.Count() != allowancesExtIdArray.Length) 
         {
@@ -80,7 +80,7 @@ public class CreateEmployeeCompensationCommandHandler : IRequestHandler<CreateEm
         var employeeAllowances = new List<EmployeeAllowance>();
         foreach (var allowance in allowances)
         {
-            var requestAllowance = request.EmployeeAllowances.FirstOrDefault(x => x.Allowance.ExternalIdentifier == allowance.ExternalIdentifier);
+            var requestAllowance = request.EmployeeAllowances.FirstOrDefault(x => x.Allowance.Id == allowance.AllowanceId);
             if (requestAllowance != null)
             {
                 employeeAllowances.Add(new EmployeeAllowance
@@ -106,14 +106,14 @@ public static class CreateEmployeeCompensationCommandExtention
 {
     public static CreateEmployeeCompensationCommand StructureRequest(
         this CreateEmployeeCompensationCommand request,
-        string employeeProfileExternalIdentifier)
+        int employeeProfileId)
     {
         return new CreateEmployeeCompensationCommand
         {
             BasicSalary = request.BasicSalary,
-            EmployeeProfile = new EntityExternalIdentifier 
+            EmployeeProfile = new EntityIdentifier 
             {
-                ExternalIdentifier = employeeProfileExternalIdentifier
+                Id = employeeProfileId
             },
             HouseRentAllowance = request.HouseRentAllowance,
             MedicalAllowance = request.MedicalAllowance,

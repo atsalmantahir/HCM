@@ -30,31 +30,6 @@ public class PayrollsRepository : IPayrollsRepository
             .FirstOrDefaultAsync(x => x.PayrollId == id && x.IsDeleted == false);
     }
 
-    public async Task<Payroll> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .Payrolls
-            //.Include(x => x.PayrollStatus)
-            .Include(x => x.EmployeeProfile)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
-    }
-
-    public async Task<Payroll> GetAsync(string employeeExternalIdentifier, int year, int month)
-    {
-        return await this
-            .context
-            .Payrolls
-            //.Include(x => x.PayrollStatus)
-            .Include(x => x.EmployeeProfile)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.EmployeeProfile.ExternalIdentifier == employeeExternalIdentifier 
-            && x.PayrollDate.Year == year 
-            && x.PayrollDate.Month == month
-            && x.IsDeleted == false);
-    }
-
     public IQueryable<Payroll> GetAll()
     {
         return this.context.Payrolls
@@ -81,5 +56,10 @@ public class PayrollsRepository : IPayrollsRepository
     {
         this.context.Payrolls.Update(entity);
         await this.context.SaveChangesAsync(cancellationToken);
+    }
+
+    public Task<Payroll> GetAsync(int employeeProfileId, int year, int month)
+    {
+        throw new NotImplementedException();
     }
 }

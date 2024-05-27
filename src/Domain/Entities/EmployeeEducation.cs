@@ -7,7 +7,6 @@ public class EmployeeEducation : BaseAuditableEntity
     [Column("EmployeeEducationId")]
 
     public int EmployeeEducationId { get; set; }
-    public string ExternalIdentifier { get; set; }
     public string Degree { get; set; }
     public string Institution { get; set; }
     public int CompletionYear { get; set; }

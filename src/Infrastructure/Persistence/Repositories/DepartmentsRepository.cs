@@ -30,35 +30,12 @@ public class DepartmentsRepository : IDepartmentsRepository
             .FirstOrDefaultAsync(x => x.DepartmentId == id && x.IsDeleted == false);
     }
 
-    public async Task<Department> GetAsync(string organisationExternalIdentifier, string externalIdentifier)
-    {
-        return await this
-            .context
-            .Departments
-            .Include(y => y.Organisation)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.Organisation.ExternalIdentifier == organisationExternalIdentifier
-            && x.ExternalIdentifier == externalIdentifier
-            && x.IsDeleted == false);
-    }
-
-    public async Task<Department> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .Departments
-            .Include(y => y.Organisation)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier
-            && x.IsDeleted == false);
-    }
-
-    public IQueryable<Department> GetAll(string organisationExternalIdentifier)
+    public IQueryable<Department> GetAll(int organistaionId)
     {
         return this.context
             .Departments
             .Include(x => x.Organisation)
-            .Where(x => x.Organisation.ExternalIdentifier == organisationExternalIdentifier && x.IsDeleted == false)
+            .Where(x => x.Organisation.OrganisationId == organistaionId && x.IsDeleted == false)
             .AsNoTracking()
             .OrderByDescending(x => x.CreatedAt)
             .ThenByDescending(x => x.LastModifiedAt);

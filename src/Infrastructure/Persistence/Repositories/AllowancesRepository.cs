@@ -38,14 +38,6 @@ public class AllowancesRepository : IAllowancesRepository
             .FirstOrDefaultAsync(x => x.AllowanceId == id && x.IsDeleted == false);
     }
 
-    public async Task<Allowance> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .Allowances
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
-    }
 
     public async Task InsertAsync(Allowance entity, CancellationToken cancellationToken)
     {

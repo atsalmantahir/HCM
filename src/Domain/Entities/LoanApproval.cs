@@ -6,7 +6,6 @@ public class LoanApproval : BaseAuditableEntity
 {
     [Column("LoanApprovalID")]
     public int LoanApprovalID { get; set; }
-    public string ExternalIdentifier { get; set; }
     public string Title { get; set; }
     public string ApproverName { get; set; }
     public string ApproverDesignation { get; set; }

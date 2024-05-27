@@ -49,13 +49,13 @@ public class OrganisationsController : ControllerBase
     /// <summary>
     /// get organistaion
     /// </summary>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet]
-    [Route("{externalIdentifier}")]
-    public async Task<OrganisationVM> GetOgranistaionAsync(string externalIdentifier)
+    [Route("{id}")]
+    public async Task<OrganisationVM> GetOgranistaionAsync(int id)
     {
-        var response = await mediator.Send(new GetOrganisationQuery(externalIdentifier));
+        var response = await mediator.Send(new GetOrganisationQuery(id));
         return response;
     }
 
@@ -74,12 +74,12 @@ public class OrganisationsController : ControllerBase
     /// <summary>
     /// update organistaion
     /// </summary>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <param name="updateOrganisationCommand"></param>
     /// <returns></returns>
     [HttpPut]
-    [Route("{externalIdentifier}")]
-    public async Task<IResult> UpdateOrganisaionAsync(string externalIdentifier,
+    [Route("{id}")]
+    public async Task<IResult> UpdateOrganisaionAsync(int id,
         [FromBody] UpdateOrganisationCommand updateOrganisationCommand)
     {
         if (!ModelState.IsValid)
@@ -87,7 +87,7 @@ public class OrganisationsController : ControllerBase
             return Results.BadRequest(ModelState);
         }
 
-        if (externalIdentifier != updateOrganisationCommand.ExternalIdentifier)
+        if (id != updateOrganisationCommand.Id)
         {
             return Results.BadRequest();
         }
@@ -99,13 +99,13 @@ public class OrganisationsController : ControllerBase
     /// <summary>
     /// update organistaion
     /// </summary>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Route("{externalIdentifier}")]
-    public async Task<IResult> DeleteOrganisaionAsync(string externalIdentifier)
+    [Route("{id}")]
+    public async Task<IResult> DeleteOrganisaionAsync(int id)
     {
-        var response = await mediator.Send(new DeleteOrganisationCommand(externalIdentifier));
+        var response = await mediator.Send(new DeleteOrganisationCommand(id));
         return Results.NoContent();
     }
 }

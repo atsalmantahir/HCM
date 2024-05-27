@@ -7,7 +7,7 @@ namespace HumanResourceManagement.Application.EmployeeExperiences.Commands.Creat
 
 public record CreateEmployeeExperienceCommand : IRequest<CreateEmployeeExperienceCommand>
 {
-    public EmployeeProfileExternalIdentifier EmployeeProfile { get; set; }
+    public EmployeeProfileIdentifier EmployeeProfile { get; set; }
     public string CompanyName { get; set; }
     public string Position { get; set; }
     public DateTime StartDate { get; set; }
@@ -31,7 +31,7 @@ public class CreateEmployeeExperienceCommandHandler : IRequestHandler<CreateEmpl
     public async Task<CreateEmployeeExperienceCommand> Handle(CreateEmployeeExperienceCommand request, CancellationToken cancellationToken)
     {
         var employeeProfile = await this.employeeProfilesRepository
-            .GetAsync(request.EmployeeProfile.ExternalIdentifier);
+            .GetAsync(request.EmployeeProfile.Id);
 
         var entity = request.ToEmployeeExperienceEntity(employeeProfile.EmployeeProfileId);
 
@@ -46,13 +46,15 @@ public class CreateEmployeeExperienceCommandHandler : IRequestHandler<CreateEmpl
 
 public static class CreateEmployeeExperienceCommandExtention
 {
-    public static CreateEmployeeExperienceCommand StructureRequest(this CreateEmployeeExperienceCommand request, string employeeExternalIdentifier)
+    public static CreateEmployeeExperienceCommand StructureRequest(
+        this CreateEmployeeExperienceCommand request,
+        int id)
     {
         return new CreateEmployeeExperienceCommand
         {
-            EmployeeProfile = new EmployeeProfileExternalIdentifier
+            EmployeeProfile = new EmployeeProfileIdentifier
             {
-                ExternalIdentifier = employeeExternalIdentifier,
+                Id = id,
             },
             CompanyName = request.CompanyName,
             EndDate = request.EndDate,

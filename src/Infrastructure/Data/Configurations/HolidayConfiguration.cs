@@ -8,8 +8,6 @@ public class HolidayConfiguration : IEntityTypeConfiguration<Holiday>
 {
     public void Configure(EntityTypeBuilder<Holiday> builder)
     {
-        builder.Property(e => e.ExternalIdentifier)
-                  .ValueGeneratedOnAdd()
-                  .HasDefaultValueSql("NEWID()");
+        
     }
 }

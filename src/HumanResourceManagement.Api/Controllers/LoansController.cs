@@ -41,10 +41,10 @@ public class LoansController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    [Route("{externalIdentifier}")]
-    public async Task<IResult> GetEmployeeLoanAsync(string externalIdentifier)
+    [Route("{id}")]
+    public async Task<IResult> GetEmployeeLoanAsync(int id)
     {
-        var response = await mediator.Send(new GetEmployeeLoanQuery(externalIdentifier)).ConfigureAwait(false);
+        var response = await mediator.Send(new GetEmployeeLoanQuery(id)).ConfigureAwait(false);
         return Results.Ok(response);
     }
 }

@@ -8,8 +8,6 @@ public class EmployeeReviewConfiguration : IEntityTypeConfiguration<EmployeeRevi
 {
     public void Configure(EntityTypeBuilder<EmployeeReview> builder)
     {
-        builder.Property(e => e.ExternalIdentifier)
-                  .ValueGeneratedOnAdd()
-                  .HasDefaultValueSql("NEWID()");
+        
     }
 }

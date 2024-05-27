@@ -6,7 +6,6 @@ public class Holiday : BaseAuditableEntity
 {
     [Column("HolidayId")]
     public int HolidayId { get; set; }
-    public string ExternalIdentifier { get; set; }
     public string HolidayName { get; set; }
     public DateTime HolidayDate { get; set; }
     public bool IsOfficial { get; set; }

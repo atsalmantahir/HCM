@@ -4,7 +4,6 @@ public interface IPayrollCyclesRepository
 {
     IQueryable<PayrollCycle> GetAll();
     Task<PayrollCycle> GetAsync(int id);
-    Task<PayrollCycle> GetAsync(string externalIdentifier);
     Task InsertAsync(PayrollCycle entity, CancellationToken cancellationToken);
     Task InsertListAsync(IList<PayrollCycle> payrolls, CancellationToken cancellationToken);
     Task UpdateAsync(PayrollCycle entity, CancellationToken cancellationToken);

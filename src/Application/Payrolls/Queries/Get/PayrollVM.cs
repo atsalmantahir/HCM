@@ -6,7 +6,7 @@ namespace HumanResourceManagement.Application.Payrolls.Queries.Get;
 public record PayrollVM
 {
     public EmployeeProfileVM EmployeeProfile { get; set; }
-    public string ExternalIdentifier { get; set; }
+    public int Id { get; set; }
     public DateTime PayrollDate { get; set; }
     public decimal HoursWorked { get; set; }
     public decimal GrossSalary { get; set; }

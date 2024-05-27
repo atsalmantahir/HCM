@@ -6,7 +6,7 @@ namespace HumanResourceManagement.Application.EmployeeAllowances.Commands.Create
 
 public record CreateEmployeeAllowanceCommand : IRequest<CreateEmployeeAllowanceCommand>
 {
-    public EntityExternalIdentifier Allowance { get; set; }
+    public EntityIdentifier Allowance { get; set; }
 
     public decimal Amount { get; set; }
 }

@@ -4,8 +4,8 @@ namespace HumanResourceManagement.Application.EmployeeExperiences.Queries.Get;
 
 public class EmployeeExperienceVM
 {
-    public string ExternalIdentifier { get; set; }
-    public EntityExternalIdentifier EmployeeProfile { get; set; }
+    public int Id { get; set; }
+    public EntityIdentifier EmployeeProfile { get; set; }
     public string CompanyName { get; set; }
     public string Position { get; set; }
     public DateTime StartDate { get; set; }

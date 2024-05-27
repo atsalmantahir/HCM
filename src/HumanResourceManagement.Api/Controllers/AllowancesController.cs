@@ -29,10 +29,10 @@ public class AllowancesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{externalIdentifier}")]
-    public async Task<IResult> GetAllowanceAsync(string externalIdentifier)
+    [Route("{id}")]
+    public async Task<IResult> GetAllowanceAsync(int id)
     {
-        var response = await mediator.Send(new GetAllowanceQuery(externalIdentifier));
+        var response = await mediator.Send(new GetAllowanceQuery(id));
         return Results.Ok(response);
     }
 

@@ -3,7 +3,7 @@ using HumanResourceManagement.Domain.Repositories;
 
 namespace HumanResourceManagement.Application.Departments.Commands.Delete;
 
-public record DeleteDepartmentCommand(string organisationExternalIdentifier, string externalIdentifier) : IRequest<DeleteDepartmentCommand>
+public record DeleteDepartmentCommand(int organisationId, int id) : IRequest<DeleteDepartmentCommand>
 {
     public bool IsDeleted { get; set; }
 }
@@ -21,21 +21,21 @@ public class DeleteDepartmentCommandHandler : IRequestHandler<DeleteDepartmentCo
 
     public async Task<DeleteDepartmentCommand> Handle(DeleteDepartmentCommand request, CancellationToken cancellationToken)
     {
-        var organistaion = await this.organisationsRepository.GetAsync(request.organisationExternalIdentifier);
+        var organistaion = await this.organisationsRepository.GetAsync(request.organisationId);
         if (organistaion is null)
         {
-            throw new OrganisationNotFoundException(request.organisationExternalIdentifier);
+            throw new OrganisationNotFoundException(request.organisationId.ToString());
         }
 
-        var department = await this.repository.GetAsync(organistaion.ExternalIdentifier, request.externalIdentifier);
+        var department = await this.repository.GetAsync(request.id);
         if (department == null)
         {
-            throw new DepartmentNotFoundException(request.externalIdentifier);
+            throw new DepartmentNotFoundException(request.id.ToString());
         }
 
         await this.repository.DeleteAsync(department, new CancellationToken());
 
-        return new DeleteDepartmentCommand(request.organisationExternalIdentifier, request.externalIdentifier)
+        return new DeleteDepartmentCommand(request.organisationId, request.id)
         {
             IsDeleted = true,
         };

@@ -8,7 +8,7 @@ namespace HumanResourceManagement.Application.Holidays.Commands.Update;
 
 public record UpdateHolidayCommand : IRequest<UpdateHolidayCommand>
 {
-    public string ExternalIdentifier { get; set; }
+    public int id { get; set; }
 
     [Required]
     public string HolidayName { get; set; }
@@ -36,7 +36,7 @@ public class UpdateHolidayCommandHandler : IRequestHandler<UpdateHolidayCommand,
             throw new ConflictRequestException($"Holiday already exists for date '{request.HolidayDate.Date}' provided");
         }
 
-        var holiday = await this.repository.GetAsync(request.ExternalIdentifier);
+        var holiday = await this.repository.GetAsync(request.id);
 
         if (holiday == null) 
         {
@@ -58,11 +58,11 @@ public static class UpdateHolidayCommandExtention
 {
     public static UpdateHolidayCommand StructureRequest(
         this UpdateHolidayCommand request,
-        string externalIdentifier)
+        int id)
     {
         return new UpdateHolidayCommand
         {
-            ExternalIdentifier = externalIdentifier,
+            id = id,
             HolidayDate = request.HolidayDate,
             HolidayName = request.HolidayName,
             IsActive = request.IsActive,

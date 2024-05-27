@@ -6,7 +6,6 @@ public class EmployeeLoan : BaseAuditableEntity
 {
     [Column("EmployeeLoanID")]
     public int EmployeeLoanID { get; set; }
-    public string ExternalIdentifier { get; set; }
     public decimal LoanAmount { get; set; }
     public LoanType LoanType { get; set; }
     public DateTime PaybackStartDate { get; set; }

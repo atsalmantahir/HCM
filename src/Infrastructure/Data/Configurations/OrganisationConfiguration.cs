@@ -8,8 +8,6 @@ public class OrganisationConfiguration : IEntityTypeConfiguration<Organisation>
 {
     public void Configure(EntityTypeBuilder<Organisation> builder)
     {
-        builder.Property(e => e.ExternalIdentifier)
-                  .ValueGeneratedOnAdd()
-                  .HasDefaultValueSql("NEWID()");
+        
     }
 }

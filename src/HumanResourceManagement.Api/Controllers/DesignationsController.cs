@@ -35,13 +35,13 @@ public class DesignationsController : ControllerBase
     /// <summary>
     /// create department
     /// </summary>
-    /// <param name="departmentExternalIdentifier"></param>
+    /// <param name="departmentId"></param>
     /// <param name="createDesignationCommand"></param>
     /// <returns></returns>
     [HttpPost]
-    [Route("departments/{departmentExternalIdentifier}/designations")]
+    [Route("departments/{departmentId}/designations")]
     public async Task<IResult> CreateDesignationAsync(
-        string departmentExternalIdentifier,
+        int departmentId,
         [FromBody] CreateDesignationCommand createDesignationCommand)
     {
         if (!ModelState.IsValid)
@@ -49,7 +49,7 @@ public class DesignationsController : ControllerBase
             return Results.BadRequest(ModelState);
         }
 
-        if (departmentExternalIdentifier != createDesignationCommand.Department.ExternalIdentifier)
+        if (departmentId != createDesignationCommand.Department.Id)
         {
             return Results.BadRequest("Organistaion External Identifier mis match!");
         }
@@ -61,47 +61,47 @@ public class DesignationsController : ControllerBase
     /// <summary>
     /// get designation
     /// </summary>
-    /// <param name="departmentExternalIdentifier"></param>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="departmentId"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     [HttpGet]
-    [Route("departments/{departmentExternalIdentifier}/designations/{externalIdentifier}")]
+    [Route("departments/{departmentId}/designations/{id}")]
     public async Task<IResult> GetDesignationAsync(
-        string departmentExternalIdentifier,
-        string externalIdentifier)
+        int departmentId,
+        int id)
     {
-        var response = await mediator.Send(new GetDesignationQuery(departmentExternalIdentifier, externalIdentifier));
+        var response = await mediator.Send(new GetDesignationQuery(departmentId, id));
         return Results.Ok(response);
     }
 
     /// <summary>
     /// get department
     /// </summary>
-    /// <param name="departmentExternalIdentifier"></param>
+    /// <param name="departmentId"></param>
     /// <param name="query"></param>
     /// <returns></returns>
     [HttpGet]
-    [Route("departments/{departmentExternalIdentifier}/designations")]
-    public async Task<IResult> GetDesignationsAsync(string departmentExternalIdentifier, [FromQuery] GetDesignationsQuery query)
+    [Route("departments/{departmentId}/designations")]
+    public async Task<IResult> GetDesignationsAsync(int departmentId, [FromQuery] GetDesignationsQuery query)
     {
         //Log.Information("Get de");
 
-        var response = await mediator.Send(new GetDesignationsQuery(departmentExternalIdentifier));
+        var response = await mediator.Send(new GetDesignationsQuery(departmentId));
         return Results.Ok(response);
     }
 
     /// <summary>
     /// update department
     /// </summary>
-    /// <param name="departmentExternalIdentifier"></param>
-    /// <param name="externalIdentifier"></param>
+    /// <param name="departmentId"></param>
+    /// <param name="id"></param>
     /// <param name="updateDesignationCommand"></param>
     /// <returns></returns>
     [HttpPut]
-    [Route("departments/{departmentExternalIdentifier}/designations/{externalIdentifier}")]
+    [Route("departments/{departmentId}/designations/{id}")]
     public async Task<IResult> UpdateDesignationAsync(
-        string departmentExternalIdentifier,
-        string externalIdentifier,
+        int departmentId,
+        int id,
         [FromBody] UpdateDesignationCommand updateDesignationCommand)
     {
         if (!ModelState.IsValid)
@@ -109,12 +109,12 @@ public class DesignationsController : ControllerBase
             return Results.BadRequest(ModelState);
         }
 
-        if (departmentExternalIdentifier != updateDesignationCommand.Department.ExternalIdentifier)
+        if (departmentId != updateDesignationCommand.Department.Id)
         {
             return Results.BadRequest("Organistaion External Identifier mis match!");
         }
 
-        if (externalIdentifier != updateDesignationCommand.ExternalIdentifier)
+        if (id != updateDesignationCommand.Id)
         {
             return Results.BadRequest();
         }

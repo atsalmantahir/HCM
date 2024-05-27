@@ -8,8 +8,6 @@ public class TaxSlabConfiguration : IEntityTypeConfiguration<TaxSlab>
 {
     public void Configure(EntityTypeBuilder<TaxSlab> builder)
     {
-        builder.Property(e => e.ExternalIdentifier)
-                  .ValueGeneratedOnAdd()
-                  .HasDefaultValueSql("NEWID()");
+        
     }
 }

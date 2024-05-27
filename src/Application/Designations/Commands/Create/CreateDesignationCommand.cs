@@ -11,7 +11,7 @@ namespace HumanResourceManagement.Application.Designations.Commands.Create;
 
 public record CreateDesignationCommand : IRequest<CreateDesignationCommand>
 {
-    public EntityExternalIdentifier Department { get; set; }
+    public EntityIdentifier Department { get; set; }
 
     [Required]
     public string DesignationName { get; set; }
@@ -31,13 +31,13 @@ public class CreateDesignationCommandHandler : IRequestHandler<CreateDesignation
 
     public async Task<CreateDesignationCommand> Handle(CreateDesignationCommand request, CancellationToken cancellationToken)
     {
-        var department = await this.departmentsRepository.GetAsync(request.Department.ExternalIdentifier);
+        var department = await this.departmentsRepository.GetAsync(request.Department.Id);
         if (department is null)
         {
-            throw new DepartmentNotFoundException($"Department : '{request.Department.ExternalIdentifier}' not found");
+            throw new DepartmentNotFoundException($"Department : '{request.Department.Id}' not found");
         }
 
-        var designations = this.repository.GetAll(request.Department.ExternalIdentifier);
+        var designations = this.repository.GetAll(request.Department.Id);
         if (designations.Any(x => x.DesignationName == request.DesignationName))
         {
             throw new ConflictRequestException($"Designation : '{request.DesignationName}' already exists");

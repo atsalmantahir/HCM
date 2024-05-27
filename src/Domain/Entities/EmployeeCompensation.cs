@@ -6,13 +6,7 @@ public class EmployeeCompensation : BaseAuditableEntity
 {
     [Column("EmployeeCompensationId")]
     public int EmployeeCompensationId { get; set; }
-    public string ExternalIdentifier { get; set; }
-
-    public decimal CurrentGrossSalary { get; set; }
     public decimal BasicSalary { get; set; }
-    public decimal HouseRentAllowance { get; set; }
-    public decimal MedicalAllowance { get; set; }
-    public decimal UtilityAllowance { get; set; }
     public PaymentMethod ModeOfPayment { get; set; }
 
     // Navigation property

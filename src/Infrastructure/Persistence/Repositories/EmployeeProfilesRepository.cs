@@ -38,22 +38,6 @@ public class EmployeeProfilesRepository : IEmployeeProfilesRepository
             .FirstOrDefaultAsync(x => x.EmployeeProfileId == id && x.IsDeleted == false);
     }
 
-    public async Task<EmployeeProfile> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .EmployeeProfiles
-            .AsNoTracking()
-            .Include(x => x.EmployeeLoans)
-            .Include(x => x.EmployeeEducations)
-            .Include(x => x.EmployeeExperiences)
-            .Include(x => x.EmployeeCompensation)
-            .Include(x => x.Designation)
-                .ThenInclude(x => x.Department)
-                .ThenInclude(x => x.Organisation)
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
-    }
-
     public IQueryable<EmployeeProfile> GetAll()
     {
         return this

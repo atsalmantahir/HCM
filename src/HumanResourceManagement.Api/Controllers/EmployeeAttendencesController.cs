@@ -33,14 +33,14 @@ public class EmployeeAttendencesController : ControllerBase
     /// <summary>
     /// create employee attendence
     /// </summary>
-    /// <param name="employeeExternalIdentifier"></param>
+    /// <param name="employeeId"></param>
     /// <param name="createEmployeeAttendenceCommand"></param>
     /// <returns></returns>
     [Authorize]
     [HttpPost]
-    [Route("{employeeExternalIdentifier}/attendance")]
+    [Route("{employeeId}/attendance")]
     public async Task<CreateEmployeeAttendenceCommand> CreateEmployeeAttendanceAsync(
-        string employeeExternalIdentifier,
+        int employeeId,
         [FromBody] CreateEmployeeAttendenceCommand createEmployeeAttendenceCommand)
     {
         var response = await mediator.Send(createEmployeeAttendenceCommand);
@@ -97,42 +97,42 @@ public class EmployeeAttendencesController : ControllerBase
 
     [Authorize]
     [HttpPut]
-    [Route("{employeeExternalIdentifier}/attendance/{externalIdentifier}")]
+    [Route("{employeeId}/attendance/{id}")]
     public async Task<IResult> UpdateEmployeeAttendanceAsync(
-        string employeeExternalIdentifier,
-        string externalIdentifier,
+        int employeeId,
+        int id,
         [FromBody] UpdateEmployeeExperienceCommand request)
     {
-        if (employeeExternalIdentifier != request?.EmployeeProfile?.ExternalIdentifier)
+        if (employeeId != request?.EmployeeProfile?.Id)
         {
             throw new BadRequestException("Employee External Identifier not match");
         }
 
-        if (externalIdentifier != request?.ExternalIdentifier)
+        if (id != request?.Id)
         {
             throw new BadRequestException("External Identifier not match");
         }
 
-        var response = await mediator.Send(request.StructureRequest(employeeExternalIdentifier, externalIdentifier));
+        var response = await mediator.Send(request.StructureRequest(employeeId, id));
         return Results.Ok(response);
     }
 
     [Authorize]
     [HttpDelete]
-    [Route("{employeeExternalIdentifier}/attendance/{externalIdentifier}")]
+    [Route("{employeeId}/attendance/{id}")]
     public async Task<IResult> DeleteEmployeeAttendanceAsync(
-        string employeeExternalIdentifier,
-        string externalIdentifier)
+        int employeeId,
+        int id)
     {
-        var response = await mediator.Send(new DeleteEmployeeAttendenceCommand(employeeExternalIdentifier, externalIdentifier));
+        var response = await mediator.Send(new DeleteEmployeeAttendenceCommand(employeeId, id));
         return Results.Ok(response);
     }
 
     [Authorize]
     [HttpGet]
-    [Route("{employeeExternalIdentifier}/attendance")]
+    [Route("{employeeId}/attendance")]
     public async Task<IResult> ListEmployeeAttendanceAsync(
-    string employeeExternalIdentifier,
+    int employeeId,
         [FromQuery] GetEmployeeAttendencesQuery query)
     {
         var response = await mediator.Send(query);
@@ -141,12 +141,12 @@ public class EmployeeAttendencesController : ControllerBase
 
     [Authorize]
     [HttpGet]
-    [Route("{employeeExternalIdentifier}/attendance/{externalIdentifier}")]
+    [Route("{employeeId}/attendance/{id}")]
     public async Task<IResult> GetEmployeeAttendanceAsync(
-        string employeeExternalIdentifier,
-        string externalIdentifier)
+        int employeeId,
+        int id)
     {
-        var response = await mediator.Send(new GetEmployeeAttendenceQuery(employeeExternalIdentifier, externalIdentifier));
+        var response = await mediator.Send(new GetEmployeeAttendenceQuery(employeeId, id));
         return Results.Ok(response);
     }
 }

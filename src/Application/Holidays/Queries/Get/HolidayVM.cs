@@ -2,7 +2,7 @@
 
 public class HolidayVM
 {
-    public string ExternalIdentifier { get; set; }
+    public int Id { get; set; }
     public string HolidayName { get; set; }
     public DateTime HolidayDate { get; set; }
     public bool IsOfficial { get; set; }

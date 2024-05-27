@@ -4,7 +4,7 @@ namespace HumanResourceManagement.Application.Payrolls.Services.Models;
 
 public class PayrollRequest
 {
-    public string OrganisationExternalIdentifier { get; set; }
+    public int OrganisationId { get; set; }
 
     [Required]
     public int Month { get; set; }

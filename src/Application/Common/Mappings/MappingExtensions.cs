@@ -66,7 +66,10 @@ public static class MappingExtensions
         return request == null ? null : new AllowanceVM
         {
             Name = request.Name,
-            ExternalIdentifier = request.ExternalIdentifier,
+            Description = "Field not set yet",
+            Id = request.AllowanceId,
+            IsTaxable = false,
+
         };
     }
 
@@ -79,11 +82,11 @@ public static class MappingExtensions
     {
         return department != null ? new DepartmentVM
         {
-            ExternalIdentifier = department.ExternalIdentifier,
+            Id = department.DepartmentId,
             DepartmentName = department.DepartmentName,
             Organisation = new OrganisationVM 
             {
-                ExternalIdentifier = department.Organisation.ExternalIdentifier,
+                Id = department.Organisation.OrganisationId,
                 OrganisationName = department.Organisation.OrganisationName,
                 Address = department.Organisation.Address,
                 DailyWorkingHours = department.Organisation.DailyWorkingHours,
@@ -103,7 +106,7 @@ public static class MappingExtensions
 
         return departments.Select(x => new DepartmentVM
         {
-            ExternalIdentifier = x.ExternalIdentifier,
+            Id = x.DepartmentId,
             DepartmentName = x.DepartmentName,
         });
     }
@@ -212,7 +215,6 @@ public static class MappingExtensions
         return new Organisation
         {
             OrganisationId = organisationId,
-            ExternalIdentifier = organisation.ExternalIdentifier,
             Address = organisation.Address,
             DailyWorkingHours = organisation.DailyWorkingHours,
             IsActive = organisation.IsActive,
@@ -231,17 +233,11 @@ public static class MappingExtensions
             return null;
         }
 
-        var grossSalary = request.CalculateGrossSalary();
-
         return new EmployeeCompensation
         {
             EmployeeProfileId = employeeProfileId,
             ModeOfPayment = request.ModeOfPayment,
-            BasicSalary = request.BasicSalary,
-            //CurrentGrossSalary = grossSalary,
-            //HouseRentAllowance = request.HouseRentAllowance,
-            //MedicalAllowance = request.MedicalAllowance,
-            //UtilityAllowance = request.UtilityAllowance,
+            BasicSalary = request.BasicSalary
         };
     }
 
@@ -251,8 +247,6 @@ public static class MappingExtensions
         {
             return null;
         }
-
-        var grossSalary = request.CalculateGrossSalary();
 
         return new EmployeeCompensation
         {
@@ -271,19 +265,12 @@ public static class MappingExtensions
             return null;
         }
 
-        var grossSalary = request.CalculateGrossSalary();
-
         return new EmployeeCompensation
         {
             EmployeeProfileId = employeeProfileId,
             EmployeeCompensationId = employeeCompensationId,
-            ExternalIdentifier = request.ExternalIdentifier,
             BasicSalary = request.BasicSalary,
-            CurrentGrossSalary = grossSalary,
-            HouseRentAllowance = request.HouseRentAllowance,
-            MedicalAllowance = request.MedicalAllowance,
             ModeOfPayment = request.ModeOfPayment,
-            UtilityAllowance = request.UtilityAllowance,
         };
     }
 
@@ -312,7 +299,6 @@ public static class MappingExtensions
         {
             DepartmentId = departmentId,
             OrganisationId = organisationId,
-            ExternalIdentifier = request.ExternalIdentifier,
             DepartmentName = request.DepartmentName,
         };
     }
@@ -342,7 +328,6 @@ public static class MappingExtensions
         {
             DepartmentId = departmentId,
             DesignationId = designationId,
-            ExternalIdentifier = request.ExternalIdentifier,
             DesignationName = request.DesignationName,
         };
     }
@@ -351,11 +336,10 @@ public static class MappingExtensions
     {
         return designation != null ? new DesignationVM
         {
-            ExternalIdentifier = designation.ExternalIdentifier,
             DesignationName = designation.DesignationName,
             Department = new DepartmentVM 
             {
-                ExternalIdentifier = designation.Department.ExternalIdentifier,
+                Id = designation.Department.DepartmentId,
                 DepartmentName = designation.Department.DepartmentName,
             },
         } : null;
@@ -370,13 +354,12 @@ public static class MappingExtensions
     {
         return organisation != null ? new OrganisationVM
         {
-            ExternalIdentifier = organisation.ExternalIdentifier,
+            Id = organisation.OrganisationId,
             Address = organisation.Address,
             DailyWorkingHours = organisation.DailyWorkingHours,
             IsActive = organisation.IsActive,
             Logo = organisation.Logo,
             OrganisationName = organisation.OrganisationName,
-            //OrganisationsEmployees = organisation.OrganisationsEmployees,
             TimeIn = organisation.TimeIn,
             TimeOut = organisation.TimeOut,
             WeekendHolidays = organisation.WeekendHolidays,
@@ -419,7 +402,6 @@ public static class MappingExtensions
         return request == null ? null : new EmployeeExperience
         {
             EmployeeExperienceId = employeeExperienceId,
-            ExternalIdentifier = request.ExternalIdentifier,
             EmployeeProfileId = employeeProfileId,
             StartDate = request.StartDate,
             EndDate = request.EndDate,
@@ -442,7 +424,6 @@ public static class MappingExtensions
             Contact = request.Contact,
             EmailAddress = emailAddress,
             EmployeeCode = request.EmployeeCode,
-            ExternalIdentifier = request.ExternalIdentifier,
             EmployeeName = request.EmployeeName,
             EmployeeType = request.EmployeeType,
             Gender = request.Gender,
@@ -495,7 +476,6 @@ public static class MappingExtensions
         return request == null ? null : new TaxSlab
         {
             TaxSlabId = taxSlabID,
-            ExternalIdentifier = request.ExternalIdentifier,
             ValidFrom = request.ValidFrom,
             ValidTill = request.ValidTill,
             MinimumIncome = request.MinimumIncome,
@@ -510,7 +490,6 @@ public static class MappingExtensions
     {
         return request == null ? null : new TaxSlabVM
         {
-            ExternalIdentifier = request.ExternalIdentifier,
             ValidFrom = request.ValidFrom,
             ValidTill = request.ValidTill,
             MinimumIncome = request.MinimumIncome,
@@ -542,7 +521,6 @@ public static class MappingExtensions
         return request == null ? null : new Holiday
         {
             HolidayId = holidayId,
-            ExternalIdentifier = request.ExternalIdentifier,
             HolidayDate = request.HolidayDate,
             HolidayName = request.HolidayName,
             IsActive = request.IsActive,
@@ -554,7 +532,7 @@ public static class MappingExtensions
     {
         return request == null ? null : new HolidayVM
         {
-            ExternalIdentifier = request.ExternalIdentifier,
+            Id = request.HolidayId,
             HolidayDate = request.HolidayDate,
             HolidayName = request.HolidayName,
             IsActive = request.IsActive,
@@ -609,7 +587,6 @@ public static class MappingExtensions
         return request == null ? null : new EmployeeAttendance 
         {
             EmployeeAttendanceId = employeeAttendenceId,
-            ExternalIdentifier = request.ExternalIdentifier,
             EmployeeProfileId = employeeProfileId,
             AttendanceDate = request.AttendanceDate,
             TimeIn = request.TimeIn,
@@ -621,10 +598,9 @@ public static class MappingExtensions
     {
         return request == null ? null : new EmployeeAttendenceVM
         {
-            ExternalIdentifier = request.ExternalIdentifier,
-            EmployeeProfile = new EntityExternalIdentifier 
+            EmployeeProfile = new EntityIdentifier 
             {
-                ExternalIdentifier = request.EmployeeProfile?.ExternalIdentifier,
+                Id = request.EmployeeProfile.EmployeeProfileId,
             },
             AttendanceDate = request.AttendanceDate,
             TimeIn = request.TimeIn,
@@ -644,7 +620,6 @@ public static class MappingExtensions
             CompletionYear = request.CompletionYear,
             EmployeeEducationId = employeeEducationId,
             EmployeeProfileId = employeeProfileId,
-            ExternalIdentifier = request.ExternalIdentifier,
             Institution = request.Institution,
             Degree = request.Degree,
         };
@@ -655,12 +630,11 @@ public static class MappingExtensions
         return request == null ? null : new EmployeeEducationVM
         {
             CompletionYear = request.CompletionYear,
-            ExternalIdentifier = request.ExternalIdentifier,
             Institution = request.Institution,
             Degree = request.Degree,
-            EmployeeProfile = new EntityExternalIdentifier 
+            EmployeeProfile = new EntityIdentifier 
             {
-                ExternalIdentifier = request.EmployeeProfile.ExternalIdentifier,
+                Id = request.EmployeeProfile.EmployeeProfileId,
             }
         };
     }
@@ -677,12 +651,12 @@ public static class MappingExtensions
         return request == null ? null : new EmployeeCompensationVM
         {
             BasicSalary = request.BasicSalary,
-            EmployeeProfile = new EntityExternalIdentifier
+            EmployeeProfile = new EntityIdentifier
             {
-                ExternalIdentifier = request.EmployeeProfile?.ExternalIdentifier,
+                Id = request.EmployeeProfile.EmployeeProfileId,
             },
             CurrentGrossSalary = grossSalary,
-            ExternalIdentifier = request.ExternalIdentifier,
+            Id = request.EmployeeCompensationId,
             ModeOfPayment = request.ModeOfPayment,
             EmployeeAllowances = request.EmployeeAllowances == null
             ? null : request.EmployeeAllowances
@@ -690,7 +664,7 @@ public static class MappingExtensions
             {
                 Allowance = new AllowanceVM
                 {
-                    ExternalIdentifier = x.Allowance?.ExternalIdentifier,
+                    Id = x.Allowance.AllowanceId,
                     Name = x.Allowance?.Name,
                     Description = "Field not set yet",
                     IsTaxable = false,
@@ -718,11 +692,11 @@ public static class MappingExtensions
         return request == null ? null : new EmployeeExperienceVM
         {
             CompanyName = request.CompanyName,
-            EmployeeProfile = new EntityExternalIdentifier 
+            EmployeeProfile = new EntityIdentifier 
             {
-                ExternalIdentifier = request.EmployeeProfile.ExternalIdentifier,
+                Id = request.EmployeeProfile.EmployeeProfileId,
             },
-            ExternalIdentifier = request.ExternalIdentifier,
+            Id = request.EmployeeExperienceId,
             EndDate = request.EndDate,
             Position = request.Position,
             StartDate = request.StartDate,
@@ -746,34 +720,34 @@ public static class MappingExtensions
             EmployeeCode = request.EmployeeCode,
             EmployeeName = request.EmployeeName,
             EmployeeType = request.EmployeeType,
-            ExternalIdentifier = request.ExternalIdentifier,
+            Id = request.EmployeeProfileId,
             Gender = request.Gender,
             MaritalStatus = request.MaritalStatus,
             LineManager = request.LineManager,
             Segment = request.Segment,
             Designation = request.Designation == null ? null : new DesignationVM 
             {
-                ExternalIdentifier = request.Designation.ExternalIdentifier,
+                Id = request.Designation.DesignationId,
                 DesignationName = request.Designation.DesignationName,
             },
             EmployeeCompensation = request.EmployeeCompensation == null ? null : request.EmployeeCompensation.ToDto(),
             EmployeeEducations = request.EmployeeEducations == null ? new () : request.EmployeeEducations.Select(x => new EmployeeEducationVM 
             {
-                ExternalIdentifier = x.ExternalIdentifier,
+                Id = x.EmployeeEducationId,
                 CompletionYear = x.CompletionYear,
                 Degree = x.Degree,
-                EmployeeProfile = new EntityExternalIdentifier 
+                EmployeeProfile = new EntityIdentifier 
                 {
-                    ExternalIdentifier = request.ExternalIdentifier,
+                    Id = request.EmployeeProfileId,
                 },
                 Institution = x.Institution
             }).ToList(),
             EmployeeExperiences = request.EmployeeExperiences == null ? new () : request.EmployeeExperiences.Select(x => new EmployeeExperienceVM
             {
-                ExternalIdentifier = x.ExternalIdentifier,
-                EmployeeProfile = new EntityExternalIdentifier 
+                Id = x.EmployeeExperienceId,
+                EmployeeProfile = new EntityIdentifier 
                 {
-                    ExternalIdentifier = request.ExternalIdentifier,
+                    Id = request.EmployeeProfileId,
                 },
                 CompanyName = x.CompanyName,
                 EndDate = x.EndDate,
@@ -795,7 +769,7 @@ public static class MappingExtensions
             GrossSalary = request.GrossSalary,
             Deductions = request.Deductions,
             EmployeeProfile = request.EmployeeProfile.ToDto(),
-            ExternalIdentifier = request.ExternalIdentifier,
+            Id = request.PayrollId,
             HasHealthInsurance = request.HasHealthInsurance,
             HasRetirementPlan = request.HasRetirementPlan,
             HolidayHours = request.HolidayHours,
@@ -862,7 +836,7 @@ public static class MappingExtensions
             LoanType = request.LoanType,
             DisbursementDate = request.DisbursementDate,
             EmployeeProfile = request.EmployeeProfile?.ToDto(),
-            ExternalIdentifier = request.ExternalIdentifier,
+            Id = request.EmployeeLoanID,
             LoanAmount = request.LoanAmount,
             LoanGuarantors = request.LoanGuarantors?.Select(x => new LoanGuarantorVM
             {
@@ -876,7 +850,7 @@ public static class MappingExtensions
                 ApproverDesignation = x.ApproverDesignation,
                 ApproverName= x.ApproverName,
                 Comments = x.Comments,
-                ExternalIdentifier = x.ExternalIdentifier,
+                Id = x.LoanApprovalID,
                 LoanApprovalStatus = x.LoanApprovalStatus,
                 Reason = x.Reason,
                 Title = x.Title,
@@ -903,7 +877,7 @@ public static class MappingExtensions
             ApproverDesignation = request.ApproverDesignation,
             ApproverName = request.ApproverName,
             Comments = request.Comments,
-            ExternalIdentifier = request.ExternalIdentifier,
+            Id = request.LoanApprovalID,
             LoanApprovalStatus = request.LoanApprovalStatus,
             Reason = request.Reason,
             Title = request.Title,
@@ -920,7 +894,7 @@ public static class MappingExtensions
         return request == null ? null : new LoanGuarantorVM 
         {
             ContactInfo = request.ContactInfo,
-            ExternalIdentifier = request.ExternalIdentifier,
+            Id = request.LoanGuarantorID,
             Name = request.Name,
             Relationship = request.Relationship,
         };
@@ -941,7 +915,7 @@ public static class MappingExtensions
     {
         return request == null ? null : new ReviewQuestionVM 
         {
-            ExternalIdentifier = request.ExternalIdentifier,
+            Id = request.ReviewQuestionId,
             IsActive = request.IsActive,
             MaxValue = request.MaxValue,
             MinValue = request.MinValue,

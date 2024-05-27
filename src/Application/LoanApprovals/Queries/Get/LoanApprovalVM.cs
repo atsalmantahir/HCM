@@ -5,7 +5,7 @@ namespace HumanResourceManagement.Application.LoanApprovals.Queries.Get;
 
 public record LoanApprovalVM
 {
-    public string ExternalIdentifier { get; set; }
+    public int Id { get; set; }
     public string Title { get; set; }
     public string ApproverName { get; set; }
     public string ApproverDesignation { get; set; }

@@ -30,15 +30,6 @@ public class LoanApprovalsRepository : ILoanApprovalsRepository
             .FirstOrDefaultAsync(x => x.LoanApprovalID == id && x.IsDeleted == false);
     }
 
-    public async Task<LoanApproval> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .LoanApprovals
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
-    }
-
     public IQueryable<LoanApproval> GetAll()
     {
         return this.context.LoanApprovals

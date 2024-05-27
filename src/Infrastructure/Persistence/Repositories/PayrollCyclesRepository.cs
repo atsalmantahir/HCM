@@ -30,17 +30,6 @@ public class PayrollCyclesRepository : IPayrollCyclesRepository
             .FirstOrDefaultAsync(x => x.PayrollCycleId == id && x.IsDeleted == false);
     }
 
-    public async Task<PayrollCycle> GetAsync(string externalIdentifier)
-    {
-        return await this
-            .context
-            .PayrollCycles
-            //.Include(x => x.PayrollStatus)
-            .Include(x => x.Payrolls)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.ExternalIdentifier == externalIdentifier && x.IsDeleted == false);
-    }
-
     public IQueryable<PayrollCycle> GetAll()
     {
         return this.context.PayrollCycles
