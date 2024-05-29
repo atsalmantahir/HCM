@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HumanResourceManagement.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240521144935_mig2")]
-    partial class mig2
+    [Migration("20240529234207_InitailCreate")]
+    partial class InitailCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,11 +45,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
 
                     b.Property<string>("DeletedBy")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -93,11 +88,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -144,11 +134,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
 
                     b.Property<string>("DesignationName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -244,11 +229,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                     b.Property<int>("EmployeeProfileId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
-
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
@@ -292,9 +272,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("CurrentGrossSalary")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<DateTimeOffset>("DeletedAt")
                         .HasColumnType("datetimeoffset");
 
@@ -303,14 +280,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
 
                     b.Property<int>("EmployeeProfileId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<decimal>("HouseRentAllowance")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -321,14 +290,8 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("MedicalAllowance")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("ModeOfPayment")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("UtilityAllowance")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("EmployeeCompensationId");
 
@@ -367,11 +330,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
 
                     b.Property<int?>("EmployeeProfileId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("FilePath")
                         .HasColumnType("nvarchar(max)");
@@ -429,11 +387,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                     b.Property<int>("EmployeeProfileId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
-
                     b.Property<string>("Institution")
                         .HasColumnType("nvarchar(max)");
 
@@ -483,11 +436,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                     b.Property<DateTime?>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -536,11 +484,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
 
                     b.Property<int>("EmployeeProfileId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -621,11 +564,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                     b.Property<int>("EmployeeType")
                         .HasColumnType("int");
 
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
-
                     b.Property<int>("Gender")
                         .HasColumnType("int");
 
@@ -684,11 +622,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                     b.Property<int>("EmployeeProfileId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -740,9 +673,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
 
                     b.Property<int?>("EmployeeReviewID")
                         .HasColumnType("int");
-
-                    b.Property<string>("ExternalIdentifier")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -801,11 +731,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                     b.Property<int>("EmployeeReviewFromManagerID")
                         .HasColumnType("int");
 
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -850,11 +775,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<DateTime>("HolidayDate")
                         .HasColumnType("datetime2");
@@ -920,11 +840,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                     b.Property<int>("EmployeeLoanId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -977,11 +892,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                     b.Property<int>("EmployeeLoanId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -1030,11 +940,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
 
                     b.Property<int>("EmployeeLoanId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -1087,11 +992,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
 
                     b.Property<string>("DeletedBy")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -1154,11 +1054,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
 
                     b.Property<int>("EmployeeProfileId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<decimal>("GrossSalary")
                         .HasColumnType("decimal(18,2)");
@@ -1274,11 +1169,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
-
                     b.Property<string>("Frequency")
                         .HasColumnType("nvarchar(max)");
 
@@ -1322,11 +1212,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
 
                     b.Property<string>("DeletedBy")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -1380,11 +1265,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
 
                     b.Property<decimal>("ExcessAmount")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ExternalIdentifier")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HumanResourceManagement.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class mig2 : Migration
+    public partial class InitailCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     AllowanceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -77,7 +76,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     OrganisationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     OrganisationName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Logo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -105,7 +103,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     PayrollCycleId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     CycleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -131,7 +128,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     ReviewQuestionId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MinValue = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     MaxValue = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
@@ -155,7 +151,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     TaxSlabId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     ValidFrom = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ValidTill = table.Column<DateTime>(type: "datetime2", nullable: false),
                     MinimumIncome = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -309,7 +304,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     DepartmentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     DepartmentName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     OrganisationId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -368,7 +362,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     DesignationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     DesignationName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -396,7 +389,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     HolidayId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     HolidayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HolidayDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsOfficial = table.Column<bool>(type: "bit", nullable: false),
@@ -427,7 +419,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     EmployeeProfileId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     EmployeeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmployeeCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmployeeType = table.Column<int>(type: "int", nullable: false),
@@ -466,7 +457,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     EmployeeAttendanceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     AttendanceDate = table.Column<DateOnly>(type: "date", nullable: false),
                     TimeIn = table.Column<TimeOnly>(type: "time", nullable: false),
                     TimeOut = table.Column<TimeOnly>(type: "time", nullable: false),
@@ -498,12 +488,7 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     EmployeeCompensationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
-                    CurrentGrossSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     BasicSalary = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    HouseRentAllowance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    MedicalAllowance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    UtilityAllowance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ModeOfPayment = table.Column<int>(type: "int", nullable: false),
                     EmployeeProfileId = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
@@ -531,7 +516,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     EmployeeEducationId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     Degree = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Institution = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CompletionYear = table.Column<int>(type: "int", nullable: false),
@@ -561,7 +545,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     EmployeeExperienceId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Position = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -592,7 +575,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     EmployeeLoanID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     LoanAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     LoanType = table.Column<int>(type: "int", nullable: false),
                     PaybackStartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -627,7 +609,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     EmployeeReviewID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     SubmitBefore = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsSubmitted = table.Column<bool>(type: "bit", nullable: false),
                     EmployeeProfileId = table.Column<int>(type: "int", nullable: false),
@@ -656,7 +637,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     PayrollId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     PayrollDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     HoursWorked = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     RequiredHours = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -747,7 +727,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     EmployeeDocumentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     Type = table.Column<int>(type: "int", nullable: false),
                     FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmployeeProfileId = table.Column<int>(type: "int", nullable: true),
@@ -787,7 +766,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     LoanApprovalID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ApproverName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ApproverDesignation = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -821,7 +799,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     LoanGuarantorID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Relationship = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ContactInfo = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -851,7 +828,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     LoanPaymentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     AmountPaid = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PaymentMethod = table.Column<int>(type: "int", nullable: false),
@@ -882,7 +858,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     EmployeeReviewFromManagerID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SubmitBefore = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsSubmitted = table.Column<bool>(type: "bit", nullable: false),
                     AdditionalCommentsFromEmployeer = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -919,7 +894,6 @@ namespace HumanResourceManagement.Infrastructure.Data.Migrations
                 {
                     EmployeeReviewFromManagerWithQuestionAndAnswerId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ExternalIdentifier = table.Column<string>(type: "nvarchar(max)", nullable: true, defaultValueSql: "NEWID()"),
                     AdditionalComments = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AnswerGiven = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmployeeReviewFromManagerID = table.Column<int>(type: "int", nullable: false),
