@@ -1,4 +1,4 @@
-DECLARE @OrgId INT, @DeptId INT, @DesigId INT
+DECLARE @OrgId INT, @DeptId INT, @DesigId INT, @AllowanceId INT
 
 -- Add Organization
 INSERT INTO Organisations (OrganisationName, TimeIn, TimeOut, DailyWorkingHours, IsActive, CreatedAt, LastModifiedAt, IsDeleted, DeletedAt)
@@ -18,7 +18,13 @@ VALUES ('Example Designation', @DeptId, GETDATE(), GETDATE(), 0, GETDATE()) -- D
 
 SET @DesigId = SCOPE_IDENTITY() -- Get the ID of the inserted designation
 
--- Add 1000 Employees with Compensation and Attendance
+-- Add Allowance
+INSERT INTO Allowances (Name, CreatedAt, LastModifiedAt, IsDeleted, DeletedAt)
+VALUES ('Example Allowance', GETDATE(), GETDATE(), 0, GETDATE()) -- Default value for DeletedAt when not deleted
+
+SET @AllowanceId = SCOPE_IDENTITY() -- Get the ID of the inserted allowance
+
+-- Add 1000 Employees with Compensation, Attendance, and Allowance Assignment
 DECLARE @Counter INT
 SET @Counter = 1
 
@@ -54,6 +60,10 @@ BEGIN
         
         SET @StartDate = DATEADD(DAY, 1, @StartDate) -- Move to the next day
     END
+
+    -- Assign Allowance to Employee
+    INSERT INTO EmployeeAllowances (EmployeeCompensationId, AllowanceId, Amount, CreatedAt, LastModifiedAt, IsDeleted, DeletedAt)
+    VALUES (@EmployeeProfileId, @AllowanceId, 15000.00, GETDATE(), GETDATE(), 0, GETDATE()) -- Default value for DeletedAt when not deleted
 
     SET @Counter = @Counter + 1
 END
